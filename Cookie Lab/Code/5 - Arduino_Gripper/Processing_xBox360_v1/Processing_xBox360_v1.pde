@@ -20,7 +20,7 @@ void setup() {
     System.exit(-1);
   }
   println(Arduino.list());
-  arduino = new Arduino(this, Arduino.list()[0], 57600);
+  arduino = new Arduino(this, Arduino.list()[2], 57600);
   arduino.pinMode(10, Arduino.SERVO);
 }
 

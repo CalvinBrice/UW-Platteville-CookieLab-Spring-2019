@@ -23,12 +23,12 @@ String Ingredient[] = {
   "Molasses", 
   "Vanilla", 
   "Egg", 
-  "BakingSoda", 
-  "ChocolateChips", 
+  "Baking \nSoda", 
+  "Chocolate \nChips", 
   "Oats", 
   "Flour", 
   "Salt", 
-  "MMs"
+  "M & M's"
 };
 
 
