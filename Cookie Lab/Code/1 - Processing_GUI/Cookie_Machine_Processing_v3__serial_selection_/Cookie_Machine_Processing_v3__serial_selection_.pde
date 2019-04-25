@@ -17,7 +17,7 @@ int myColorBackground = color(0, 0, 0);
 String val;     // Data received from the serial port
 
 int xBorder = 50; //Space for the first slider
-int xSpace = 120; //Spacing between sliders
+int xSpace = 120; //Spacing between sliders  
 
 
 void setup() {
@@ -30,9 +30,9 @@ void setup() {
   cp5.setFont(createFont("Verdana", 14));
 
   //Sliders
-  for (int i = 0; i<11; i++) {
+  for (int i = 0; i<Ingredient.length; i++) {
     cp5.addSlider(Ingredient[i]) // Bay 1
-      .setValue(5)
+      //.setValue(5)
       .setPosition(xBorder + i*xSpace, 150)
       .setSize(50, 300)
       .setRange(0, 10)
@@ -52,20 +52,28 @@ void draw() {
   serialButtonDraw();
 }
 
-
 void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isController()) {  
     if (theEvent.getController().getName()=="Dispense") {
       println("Dispense");
-      //myPort.write("!Salt 1\r");
+      print("Writing value to ");
+      print(serial_list);
+      print(": ");
+      println(Sugar);
+      //int y = Sugar;
+      serial_port.write(Sugar);
+      //for (int i = 0; i<Ingredient.length; i++) {
+      //  serial_port.write(Ingredient[i]);
+      //  //serial_port.write("Dispense Ingredients");
+      //}
     }
 
     //// dragging slider1 changes the value of slider2
-    //if (theEvent.getController().getName()=="slider1") {
-    //  float value = theEvent.getController().getValue();
+    //if (theEvent.getController().getName()=="Sugar") {
+    //  float sugar = theEvent.getController().getValue();
     //  // prevent warnings at start
-    //  if (controlP5.getController("slider2") != null) {
+    //  if (controlP5.getController("Sugar") != null) {
     //    //controlP5.getController("slider2").setValue(value);
     //  }
     //}

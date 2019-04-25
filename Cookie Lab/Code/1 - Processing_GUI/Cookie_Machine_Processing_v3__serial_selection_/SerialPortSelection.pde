@@ -67,7 +67,7 @@ void mousePressed() {
       // connect to the selected serial port
       serial_port = new Serial(this, Serial.list()[serial_list_index], 9600);
       print("connected to: ");
-      println(serial_port);
+      println(serial_list);
     }
   }
   // Disconnect button clicked
@@ -76,7 +76,7 @@ void mousePressed() {
       // disconnect from the serial port
       serial_port.stop();
       print("disconnected from: ");
-      println(serial_port);
+      println(serial_list);
       serial_port = null;
     }
   }
