@@ -4,7 +4,8 @@
  Purpose:                   
  Hardware:       
  
- Date:        24 April 2019   Author:   Calvin Brice, Nicholas Gorich
+ Date:        27 April 2019   
+ Author(s):   Calvin Brice, Nicholas Gorich
  ------------------------------------------------------------------------------------*/
 
 import controlP5.*;
@@ -38,5 +39,5 @@ void setup() {
 
 void draw() {
   background(myColorBackground);
-  serialButtonDraw();
+  DrawTextBox("Select Port", serial_list, 10, 10, 120, 60);
 }
