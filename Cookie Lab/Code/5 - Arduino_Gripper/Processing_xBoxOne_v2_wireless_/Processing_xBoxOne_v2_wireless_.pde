@@ -57,7 +57,7 @@ public void getUserInput() {
   basePos = stickMove(baseRotation, basePos, 0, 180); // changes output based on input
 
   verticalTravel = cont.getSlider("verticalTravel").getValue();
-  verticalPos = stickMove(verticalTravel, verticalPos, 0, 180); // changes output based on input
+  verticalPos = stickMove(verticalTravel, verticalPos, 0, 400); // changes output based on input
 }
 
 float stickMove(float input, float output, float lowerBound, float upperBound) {
