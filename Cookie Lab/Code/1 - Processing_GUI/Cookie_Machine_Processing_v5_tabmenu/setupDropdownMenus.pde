@@ -4,8 +4,8 @@ void setupDropdownMenus() {
   for (int j = 0; j<numbOfIngredients; j++) {
     String bayLabel = "bay" + str(j);
     bayNumber[j] = cp5.addDropdownList(bayLabel)
-      .setPosition(xBorder + j*xSpace-5, 20+tempDist)
-      .setSize(110, 300);
+      .setPosition(xBorder + j*xSpace-5, 5+tempDist)
+      .setSize(110, 500);
     customize(bayNumber[j], j); // customize the second list
   }
 }
@@ -13,7 +13,7 @@ void setupDropdownMenus() {
 // Customize the dropdown menus
 void customize(DropdownList ddl, int index) {
   ddl.setBackgroundColor(color(196));
-  ddl.setItemHeight(20);
+  ddl.setItemHeight(40);
   ddl.setBarHeight(25);
   ddl.getCaptionLabel().set("Bay "+str(index));
   ddl.setItems(IngredientList);

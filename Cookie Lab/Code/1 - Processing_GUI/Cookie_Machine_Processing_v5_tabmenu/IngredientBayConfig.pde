@@ -4,18 +4,23 @@ Ingredients[] ingredient;
 //Add struct class
 class Ingredients {
   String name;
-  int quantity;
+  float quantity;
 
   //Constructor
   Ingredients(String tempName, int tempQuantity) {
     name = tempName;
     quantity = tempQuantity;
   }
-  String IngName() {
+  String Identity() {
     return name;
   }
-  int IngQuantity() {
+  float Amount() {
     return quantity;
+  }
+  void Update() {
+    for (int r = 0; r<numbOfIngredients; r++) {
+      quantity = cp5.getController(ingredient[r].Identity()).getValue();
+    }
   }
 };
 
@@ -39,5 +44,11 @@ void setIngredients() {
   ingredient = new Ingredients[numbOfIngredients];
   for (int k = 0; k<numbOfIngredients; k++) {
     ingredient[k] = new Ingredients(IngredientList[k], 0);
+  }
+}
+
+void updateIngredients() {
+  for (int i=0; i<numbOfIngredients; i++) {
+    ingredient[i].Update();
   }
 }
