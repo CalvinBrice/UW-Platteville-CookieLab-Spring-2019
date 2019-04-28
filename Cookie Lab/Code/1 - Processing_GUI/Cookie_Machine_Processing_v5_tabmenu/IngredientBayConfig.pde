@@ -1,8 +1,25 @@
 // Ingredient bay order (starts from zero)
+Ingredients[] ingredient;
 
 //Add struct class
+class Ingredients {
+  String name;
+  int quantity;
 
-String Ingredient[] = {  
+  //Constructor
+  Ingredients(String tempName, int tempQuantity) {
+    name = tempName;
+    quantity = tempQuantity;
+  }
+  String IngName() {
+    return name;
+  }
+  int IngQuantity() {
+    return quantity;
+  }
+};
+
+String IngredientList[] = {  
   "Sugar", 
   "Butter", 
   "Molasses", 
@@ -16,6 +33,11 @@ String Ingredient[] = {
   "M & M's"
 };
 
-int Sugar = 0;
-int Butter = 0;
-int Molasses = 0;
+int numbOfIngredients = IngredientList.length;
+
+void setIngredients() {
+  ingredient = new Ingredients[numbOfIngredients];
+  for (int k = 0; k<numbOfIngredients; k++) {
+    ingredient[k] = new Ingredients(IngredientList[k], 0);
+  }
+}

@@ -10,7 +10,7 @@ void controlEvent(ControlEvent theEvent) {
         print("Writing value to ");
         print(serial_list);
         print(": ");
-        println(Sugar);
+        println(ingredient[0].IngQuantity());
         //serial_port.write(Sugar);
       } else {
         javax.swing.JOptionPane.showMessageDialog(null, "Please set Serial Port"); //Pop up error message

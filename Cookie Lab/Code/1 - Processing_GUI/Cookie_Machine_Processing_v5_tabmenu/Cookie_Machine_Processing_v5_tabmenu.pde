@@ -30,12 +30,14 @@ void setup() {
   cp5 = new ControlP5(this);
   cp5.setFont(createFont("Verdana", 14));
 
+  setIngredients();
+
   // Setup elements
   setupTabs();
   setupSerialSelection();
-  setupDropdownMenus();
   setupSliders();
   setupButtons();
+  setupDropdownMenus();
 }
 
 void draw() {
