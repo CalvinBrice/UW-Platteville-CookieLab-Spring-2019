@@ -1,3 +1,8 @@
+//Linear actuator parameters
+float homingSpeedInMMPerSec = 5.0;   // speed to move towards limit switch
+float maxHomingDistanceInMM = 400;   // since the lead-screw is 500mm long with 400mm of travel, should never move more than that
+int directionTowardHome = -1;        // direction to move toward limit switch: 1 goes positive direction, -1 backward
+
 void setHome()  //Function to home with limit switch
 {
   Serial.println("Moving to home position");

@@ -1,3 +1,5 @@
+// This tab can be rewritten or deleted
+
 void pickup() //sample movement
 {
   stepper.setSpeedInMillimetersPerSecond(25.0);
