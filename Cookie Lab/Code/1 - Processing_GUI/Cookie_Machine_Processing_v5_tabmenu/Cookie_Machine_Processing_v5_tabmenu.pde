@@ -10,38 +10,35 @@
 
 import controlP5.*;
 import processing.serial.*;
+import java.util.*;
 
-ControlP5 controlP5;
 ControlP5 cp5;
 
-int myColorBackground = color(0, 0, 0);
+int myColorBackground = color(20, 20, 20);
 String val;     // Data received from the serial port
 
-int xBorder = 50; //Space for the first slider
-int xSpace = 120; //Spacing between sliders
+// explore controlp5 tab feature for menus?
+
+int xBorder = 50;   //Space for the first slider
+int xSpace = 120;   //Spacing between sliders
 int tempDist = 100; //Moving the sliders and button down a little for the dropdown lists until we figure out how to make a new, password accessible window
 
 
 void setup() {
-  size(1400, 600);
+  size(1400, 600); // use fullscreen() eventually
   background(myColorBackground);
   cp5 = new ControlP5(this);
   cp5.setFont(createFont("Verdana", 14));
 
-  serialSelectionSetup();
-
-  //Dropdown Menus
-  createDropdownMenus();
-
-  //Sliders
-  createSliders();
-
-  //Buttons
-  createButtons();
-  javax.swing.JOptionPane.showMessageDialog(null, "Please set Serial Port");
+  // Setup elements
+  setupTabs();
+  setupSerialSelection();
+  setupDropdownMenus();
+  setupSliders();
+  setupButtons();
 }
 
 void draw() {
   background(myColorBackground);
-  DrawTextBox("Select Port", serial_list, 10, 10, 120, 60);
+  updateComPorts();
 }

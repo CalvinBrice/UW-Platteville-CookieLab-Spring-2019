@@ -1,3 +1,9 @@
+//----------------------------------
+//
+// Load standardFirmata sketch onto arduino
+//
+//----------------------------------
+
 import processing.serial.*;
 import net.java.games.input.*;
 import org.gamecontrolplus.*;
@@ -9,6 +15,10 @@ ControlDevice cont;
 ControlIO control;
 Arduino arduino;
 PFont f;
+
+// pin assignments
+int Finger_Pin = 9;
+int Wrist_PIN = 10;
 
 //float thumb;
 float grip;    // Stores servo angle of gripper right finger
@@ -39,12 +49,10 @@ void setup() {
   }
 
   println(Arduino.list());
-  arduino = new Arduino(this, Arduino.list()[3], 57600); // enumerates connected USB ports
+  arduino = new Arduino(this, Arduino.list()[2], 57600); // enumerates connected USB ports
 
-  //arduino.pinMode(7, Arduino.SERVO); // initiates base servo on pin
-  arduino.pinMode(8, Arduino.SERVO); // initiates wrist servo on pin
-  arduino.pinMode(9, Arduino.SERVO); // initiates gripper servo on pin
-  arduino.pinMode(10, Arduino.SERVO); // initiates gripper servo on pin
+  arduino.pinMode(Finger_Pin, Arduino.SERVO);
+  arduino.pinMode(Wrist_PIN, Arduino.SERVO);
 }
 
 public void getUserInput() {
