@@ -7,6 +7,7 @@ void controlEvent(ControlEvent theEvent) {
     if (theEvent.getController().getName()=="Dispense") {
         updateIngredients();
       if (serial_port != null) {
+        sendToArduinoMaster();
         println("Dispense");
         print("Writing value to ");
         print(serial_list);
