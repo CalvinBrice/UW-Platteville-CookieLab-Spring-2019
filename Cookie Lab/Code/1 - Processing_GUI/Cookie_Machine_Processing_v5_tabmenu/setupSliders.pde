@@ -6,10 +6,11 @@ void setupSliders() {
       .setSize(50, 300)
       .setRange(0, 10)
       .setNumberOfTickMarks(11)
-      .setValue(ingredient[i].Amount())
-      .setDecimalPrecision(0);
-    //cp5.getController(ingredient[i].Identity()).getCaptionLabel();
-    //cp5.getController(ingredient[i].Identity()).getValueLabel().align(ControlP5.CENTER, ControlP5.TOP_OUTSIDE).setPaddingY(0); //This doesn't quite work... it should be at the very top of the slider
+      .setValue(ingredient[i].Amount()) // Starts each slider at zero
+      .setDecimalPrecision(0)
+      .setLabelVisible(false);
+      ;
+    //cp5.getController(ingredient[i].Identity()).getValueLabel().align(ControlP5.RIGHT_OUTSIDE,ControlP5.TOP_OUTSIDE).setPaddingY(0); //This doesn't quite work... it should be at the very top of the slider
   }
 }
 
