@@ -16,13 +16,13 @@ void setupSerialSelection() {
     .moveTo("Settings") //moves to settings tab
     .setLabel("Connect")
     .setPosition(140, 40) // x, y
-    .setSize(100, 25); // width, height
+    .setSize(110, 25); // width, height
 
   cp5.addButton("serial_disconnect")
     .moveTo("Settings") //moves to settings tab
     .setLabel("Disconnect")
     .setPosition(140, 75) // x, y
-    .setSize(100, 25); // width, height
+    .setSize(110, 25); // width, height
 
 
   // get the list of serial ports on the computer
