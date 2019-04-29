@@ -5,6 +5,7 @@ void controlEvent(ControlEvent theEvent) {
 
     // Dispense button clicked (currently testing i2c connection)
     if (theEvent.getController().getName()=="Dispense") {
+        updateIngredients();
       if (serial_port != null) {
         println("Dispense");
         print("Writing value to ");

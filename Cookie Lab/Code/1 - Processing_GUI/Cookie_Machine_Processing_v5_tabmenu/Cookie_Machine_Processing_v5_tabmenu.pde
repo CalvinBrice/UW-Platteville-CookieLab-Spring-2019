@@ -43,5 +43,4 @@ void setup() {
 void draw() {
   background(myColorBackground);
   updateComPorts();
-  updateIngredients();
 }

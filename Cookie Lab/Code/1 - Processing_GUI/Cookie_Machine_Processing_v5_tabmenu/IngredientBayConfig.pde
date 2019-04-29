@@ -17,10 +17,8 @@ class Ingredients {
   float Amount() {
     return quantity;
   }
-  void Update() {
-    for (int r = 0; r<numbOfIngredients; r++) {
-      quantity = cp5.getController(ingredient[r].Identity()).getValue();
-    }
+  void Update(int index) {
+      quantity = cp5.getController(ingredient[index].Identity()).getValue();
   }
 };
 
@@ -49,6 +47,6 @@ void setIngredients() {
 
 void updateIngredients() {
   for (int i=0; i<numbOfIngredients; i++) {
-    ingredient[i].Update();
+    ingredient[i].Update(i);
   }
 }
