@@ -14,6 +14,7 @@ import java.util.*;
 
 ControlP5 cp5;
 
+
 int myColorBackground = color(20, 20, 20);
 String val;     // Data received from the serial port
 
@@ -21,7 +22,7 @@ String val;     // Data received from the serial port
 
 int xBorder = 50;   //Space for the first slider
 int xSpace = 120;   //Spacing between sliders
-int tempDist = 100; //Moving the sliders and button down a little for the dropdown lists until we figure out how to make a new, password accessible window
+int tempDist = 130; //Moving the sliders and button down a little for the dropdown lists until we figure out how to make a new, password accessible window
 
 
 void setup() {
@@ -43,4 +44,5 @@ void setup() {
 void draw() {
   background(myColorBackground);
   updateComPorts();
+  updateIngredients();
 }
