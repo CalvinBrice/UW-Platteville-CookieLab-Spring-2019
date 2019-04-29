@@ -48,14 +48,6 @@ void setIngredients() {
 void updateIngredients() {
   for (int i=0; i<numbOfIngredients; i++) {
     ingredient[i].Update(i);
-    String caption = IngredientList[i];
-    caption = caption.toUpperCase();
-    textFont(createFont("Verdana", 14));
-    textAlign(CENTER);
-    text(caption, xBorder+i*xSpace-24, 430, 100, 45);
-    int value = round(ingredient[i].Amount());
-    textFont(createFont("Verdana", 14));
-    textAlign(CENTER);
-    text(value, xBorder+i*xSpace+25, 126);
+    ingredientValueLabel[i].setText(str(round(ingredient[i].Amount())));
   }
 }

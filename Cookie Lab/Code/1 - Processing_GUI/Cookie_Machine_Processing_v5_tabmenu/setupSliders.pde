@@ -10,7 +10,6 @@ void setupSliders() {
       .setDecimalPrecision(0)
       .setLabelVisible(false);
       ;
-    //cp5.getController(ingredient[i].Identity()).getValueLabel().align(ControlP5.RIGHT_OUTSIDE,ControlP5.TOP_OUTSIDE).setPaddingY(0); //This doesn't quite work... it should be at the very top of the slider
   }
 }
 

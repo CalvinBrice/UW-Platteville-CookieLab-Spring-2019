@@ -35,7 +35,7 @@ void setupPassword() {
     .moveTo("Settings") //moves to settings tab
     .setPosition(500, 50)
     .setSize(200, 40)
-    //.setFont(font)
+    .setFont(font)
     .setFocus(true)
     .setColor(color(0, 255, 0))
     .getCaptionLabel().align(ControlP5.CENTER, ControlP5.BOTTOM_OUTSIDE)
