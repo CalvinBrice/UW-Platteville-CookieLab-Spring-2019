@@ -53,12 +53,6 @@ static class Ingredients {
   int getLocation() {
     return location;
   }
-  //static void swapIngredients(int index1, int index2) {
-  //  Ingredients temp;
-  //  temp = ingredient[i];
-  //  ingredient1 = ingredient2;
-  //  ingredient2 = temp;
-  //}
 };
 
 void setIngredients() {
@@ -75,36 +69,6 @@ void updateIngredients() {
     ingredient[i].quantity = round(cp5.getController(ingredient[i].getIdentity()).getValue());
     defaultIngredient[i].quantity = round(cp5.getController(defaultIngredient[i].getIdentity()).getValue());
     ingredientValueLabel[i].setText(str(round(defaultIngredient[i].getAmount())));
+    BayList[i] = round(bayNumber[i].getValue());
   }
-}
-
-void sorting() { // Not sorting properly and second+ iterations have interesting results.
-  Ingredients ing;
-  Integer[] temp = new Integer[numbOfIngredients];
-  Integer[] num = new Integer[numbOfIngredients];
-
-  for (int i=0; i<numbOfIngredients; i++) {
-    //print(ingredient[i].getAmount()+" ");
-    //println(defaultIngredient[i].getAmount()+" ");
-    num[i] = ingredient[i].getLocation();
-    temp[i] = num[i];
-    print(num[i]+", ");
-  }
-  println();
-  Arrays.sort(num);
-  for (int i=0; i<numbOfIngredients; i++) {
-    for (int j=0; j<numbOfIngredients; j++) {
-      if (num[i] == temp[j]) {
-        ing = ingredient[i];
-        ingredient[i] = ingredient[j];
-        ingredient[j] = ing;
-      }
-    }
-  }
-  for (int i=0; i<numbOfIngredients; i++) {
-    //print(ingredient[i].getAmount()+" ");
-    //println(defaultIngredient[i].getAmount()+" ");
-    print(num[i]+", ");
-  }
-  println();
 }

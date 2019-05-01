@@ -1,20 +1,25 @@
 int[] list = new int[numbOfIngredients];
 
 void sendToArduinoMaster() {
-  sorting();
+  //sorting();
+  println(numbOfIngredients);
   serial_port.write(numbOfIngredients);
-  for (int i = 0; i< numbOfIngredients; i++) {
-    list[i] = int(round(ingredient[i].getAmount()));
-    //list[i] = int(round(bayNumber[i].getValue()));
-    //println(list[i]);
-    serial_port.write(list[i]);
+  for (int i = 0; i < numbOfIngredients; i++) {
+    for (int j = 0; j < numbOfIngredients; j++) {
+      if (ingredient[j].getLocation() == i) {
+        list[i] = int(round(ingredient[j].getAmount()));
+        println(list[i]);
+        serial_port.write(list[i]);
+      }
+      continue;
+    }
   }
 }
 
 void types(String a) {
   println("it's a String");
 }
-void types(int a)   {
+void types(int a) {
   println("it's an int");
 }
 void types(char a) {

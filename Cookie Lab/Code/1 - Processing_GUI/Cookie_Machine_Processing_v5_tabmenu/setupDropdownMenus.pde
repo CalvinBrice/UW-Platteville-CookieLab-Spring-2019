@@ -1,7 +1,7 @@
 // Create dropdown menus
 DropdownList[] bayNumber = new DropdownList[numbOfIngredients];
 
-void setupDropdownMenus() {
+void setupDropdownMenus() { // Doesn't effect the code at all which is okay for now. Perhaps a stretch goal.
   Group g1 = cp5.addGroup("g1")
     .moveTo("Settings") //moves to settings tab;
     .setVisible(false);
@@ -10,8 +10,7 @@ void setupDropdownMenus() {
     bayNumber[j] = cp5.addDropdownList(bayLabel)
       .setGroup(g1)
       .setPosition(xBorder + j*xSpace-5, 5+tempDist)
-      .setSize(110, 500)
-      .setValue(BayList[j]);
+      .setSize(110, 500);
     customize(bayNumber[j], j); // customize the second list
   }
 
@@ -25,6 +24,7 @@ void customize(DropdownList ddl, int index) {
   ddl.setBarHeight(25);
   ddl.getCaptionLabel().set("Bay "+str(index+1));
   ddl.setItems(IngredientList);
+  ddl.setValue(index);
   ddl.setColorBackground(color(60));
   ddl.setColorActive(color(255, 128));
   ddl.setOpen(false);

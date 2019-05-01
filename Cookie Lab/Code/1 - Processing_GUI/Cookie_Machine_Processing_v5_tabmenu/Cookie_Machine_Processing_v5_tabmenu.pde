@@ -48,7 +48,6 @@ void setup() {
   setupButtons();
   setupDropdownMenus();
   setupTextLabels();
-  
 }
 
 void draw() {
