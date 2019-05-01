@@ -8,9 +8,6 @@ void setupTabs() {
     .setColorActive(color(255, 128, 0))
     ;
 
-  // if you want to receive a controlEvent when
-  // a  tab is clicked, use activeEvent(true)
-
   cp5.getTab("default")
     .activateEvent(true)
     .setLabel("Main")

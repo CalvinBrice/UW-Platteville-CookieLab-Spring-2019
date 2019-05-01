@@ -12,8 +12,8 @@ void controlEvent(ControlEvent theEvent) {
         print("Writing value to ");
         print(serial_list);
         print(": ");
-        for (int i = 0; i<numbOfIngredients; i++) {
-          print(ingredient[i].Identity()+": "+ingredient[i].Amount()+", ");
+        for (Ingredients item1 : ingredient) {
+          print(item1.getIdentity()+": "+item1.getAmount()+", ");
         }
         println();
         //serial_port.write(Sugar);

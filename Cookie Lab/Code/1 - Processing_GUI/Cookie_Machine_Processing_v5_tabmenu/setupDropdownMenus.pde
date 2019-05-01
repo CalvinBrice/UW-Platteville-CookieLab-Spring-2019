@@ -1,6 +1,5 @@
 // Create dropdown menus
 DropdownList[] bayNumber = new DropdownList[numbOfIngredients];
-int index = 0;
 
 void setupDropdownMenus() {
   Group g1 = cp5.addGroup("g1")
@@ -11,7 +10,8 @@ void setupDropdownMenus() {
     bayNumber[j] = cp5.addDropdownList(bayLabel)
       .setGroup(g1)
       .setPosition(xBorder + j*xSpace-5, 5+tempDist)
-      .setSize(110, 500);
+      .setSize(110, 500)
+      .setValue(BayList[j]);
     customize(bayNumber[j], j); // customize the second list
   }
 
@@ -28,8 +28,6 @@ void customize(DropdownList ddl, int index) {
   ddl.setColorBackground(color(60));
   ddl.setColorActive(color(255, 128));
   ddl.setOpen(false);
-  ddl.setDefaultValue(index);
-  index++;
 }
 
 

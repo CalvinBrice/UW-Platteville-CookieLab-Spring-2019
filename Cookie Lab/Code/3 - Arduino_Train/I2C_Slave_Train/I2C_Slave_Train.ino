@@ -9,6 +9,7 @@ const int I2C_ADDRESS = 2;  // SPI address for this controller
 const int CS = 10;  // Digital pot controlling pin
 const int FORWARD = 69;  // Digital pot value to go forward
 const int BACKWARD = 57;  // Digital pot value to go backward
+const int TURBO = 5; // A little extra speed for longer distances [not in the code anywhere yet] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 const int STOP = 60;  // Digital pot value to stop
 const int CAP_SENSOR = 2; // Change to whatever pin we use <<<<<<<<<<<<<<
 boolean straight = true;
