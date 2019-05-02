@@ -21,9 +21,9 @@ const byte MY_ADDRESS = 3;  // i2c address of board
 
 // pin assignments
 int LED_PIN = 13;
-int MOTOR_STEP_PIN = 3;
-int MOTOR_DIRECTION_PIN = 4;
-int LIMIT_SWITCH_PIN = 5;
+int MOTOR_STEP_PIN = 3; // --> PUL+
+int MOTOR_DIRECTION_PIN = 4; // --> DIR+
+int LIMIT_SWITCH_PIN = 5;// --> Limit switch RED wire
 
 //Servo pin setup
 int FINGER_SERVO = 9;
@@ -75,12 +75,12 @@ void setup()
   stepper.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
   //Begin homing procedure
-  //setHome();
-  
+  setHome();
+
   Debug();
 }
 
 void loop()
 {
-
+  setHeight(250);
 }

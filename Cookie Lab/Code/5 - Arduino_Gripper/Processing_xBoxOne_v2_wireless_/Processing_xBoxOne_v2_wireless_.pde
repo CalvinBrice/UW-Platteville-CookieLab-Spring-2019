@@ -19,13 +19,15 @@ PFont f;
 // pin assignments
 int Finger_Pin = 9;
 int Wrist_PIN = 10;
+int Base_PIN = 11;
 
 //float thumb;
 float grip;    // Stores servo angle of gripper right finger
 float wristRotationCW;     // Stores servo angle of gripper left finger
 float wristRotationCCW;          // Stores servo angle of gripper wrist
-float baseRotation;   // Stores servo angle of gripper rotation
-float basePos = 0;   // Stores position of gripper rotation (0 ~ 180)
+float baseRotation;   // Stores input angle of gripper rotation
+float basePos = 180;   // Stores current position of gripper rotation (0 ~ 180)
+float basePosPrevious = basePos;   // Stores previous position of gripper rotation (0 ~ 180)
 float verticalTravel; // Stores Nema 23 vertical height position
 float verticalPos = 90;   // Stores position of gripper height
 
@@ -49,10 +51,11 @@ void setup() {
   }
 
   println(Arduino.list());
-  arduino = new Arduino(this, Arduino.list()[2], 57600); // enumerates connected USB ports
+  arduino = new Arduino(this, Arduino.list()[3], 57600); // enumerates connected USB ports
 
   arduino.pinMode(Finger_Pin, Arduino.SERVO);
   arduino.pinMode(Wrist_PIN, Arduino.SERVO);
+  arduino.pinMode(Base_PIN, Arduino.SERVO);
 }
 
 public void getUserInput() {
@@ -63,6 +66,7 @@ public void getUserInput() {
 
   baseRotation = cont.getSlider("baseRotation").getValue();
   basePos = stickMove(baseRotation, basePos, 0, 180); // changes output based on input
+  //arduino.servoWrite(Base_PIN, (int)basePos);
 
   verticalTravel = cont.getSlider("verticalTravel").getValue();
   verticalPos = stickMove(verticalTravel, verticalPos, 0, 400); // changes output based on input
@@ -79,25 +83,37 @@ float stickMove(float input, float output, float lowerBound, float upperBound) {
       output = output + input;
     }
   }
-  
+
   wristPos = cont.getButton("wristRotationCW").pressed();
   if (wristPos == true) {
     // Rotate right:
-    arduino.servoWrite(10, 180);
+    arduino.servoWrite(Wrist_PIN, 180);
   } else {
     // Rotate left:
-    arduino.servoWrite(10, 0);
+    arduino.servoWrite(Wrist_PIN, 0);
   }
-  
+
   return output;
 }
 
 void draw() {
   getUserInput();
   background(grip, 100, 255);
-  arduino.servoWrite(9, (int)grip);
+  arduino.servoWrite(Finger_Pin, (int)grip);
+  basePositioningFunction(basePos, basePosPrevious);
   debug();
   //delay(100);
+}
+
+int counter = 0;
+void basePositioningFunction(float basePos, float basePosPrevious) {
+  if  (basePos != basePosPrevious) {
+    arduino.servoWrite(Base_PIN, (int)basePos);
+    basePosPrevious = basePos;
+    print(counter);
+    counter = counter++;
+    println(": Writing servo");
+  }
 }
 
 void debug() { 

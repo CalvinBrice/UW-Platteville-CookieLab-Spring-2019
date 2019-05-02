@@ -48,7 +48,7 @@
 const int LED_PIN = 13;
 const int MOTOR_STEP_PIN = 3;
 const int MOTOR_DIRECTION_PIN = 4;
-const int LIMIT_SWITCH_PIN = 9;
+const int LIMIT_SWITCH_PIN = 5;
 
 
 //
@@ -97,7 +97,7 @@ void setHome()  //Function to home with limit switch
   // move the motor toward the limit switch to find the "Home" position
   //
   const float homingSpeedInMMPerSec = 5.0;
-  const float maxHomingDistanceInMM = 380;   // since my lead-screw is 38cm long, should never move more than that
+  const float maxHomingDistanceInMM = 200;   // since my lead-screw is 38cm long, should never move more than that
   const int directionTowardHome = -1;        // direction to move toward limit switch: 1 goes positive direction, -1 backward
 
   if (stepper.moveToHomeInMillimeters(directionTowardHome, homingSpeedInMMPerSec, maxHomingDistanceInMM, LIMIT_SWITCH_PIN) != true)
@@ -184,8 +184,8 @@ void sample() //sample movement
 
 void loop() ///sample loop
 {
-  pickup();
+//  pickup();
   travel();
-  sample();
-  delay(100);
+//  sample();
+//  delay(100);
 }
