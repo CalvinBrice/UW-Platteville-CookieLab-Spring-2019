@@ -1,9 +1,9 @@
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
-  #include <avr/power.h>
+#include <avr/power.h>
 #endif
 
-#define PIN D6
+#define PIN 6
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -22,9 +22,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-  #if defined (__AVR_ATtiny85__)
-    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-  #endif
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
   // End of trinket special code
 
   strip.begin();
@@ -33,29 +33,46 @@ void setup() {
 }
 
 void loop() {
-//  // Some example procedures showing how to display to the pixels:
-//  colorWipe(strip.Color(255, 0, 0), 50); // Red
-//  colorWipe(strip.Color(0, 255, 0), 50); // Green
-//  colorWipe(strip.Color(0, 0, 255), 50); // Blue
-////colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
-//  // Send a theater pixel chase in...
-//  theaterChase(strip.Color(127, 127, 127), 50); // White
-//  theaterChase(strip.Color(127, 0, 0), 50); // Red
-//  theaterChase(strip.Color(0, 0, 127), 50); // Blue
-//
-//  rainbow(20);
-//  rainbowCycle(20);
-//  theaterChaseRainbow(50);
+  //  // Some example procedures showing how to display to the pixels:
+  //  colorWipe(strip.Color(255, 0, 0), 50); // Red
+  //  colorWipe(strip.Color(0, 255, 0), 50); // Green
+  //  colorWipe(strip.Color(0, 0, 255), 50); // Blue
+  ////colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
+  //  // Send a theater pixel chase in...
+  //  theaterChase(strip.Color(127, 127, 127), 50); // White
+  //  theaterChase(strip.Color(127, 0, 0), 50); // Red
+  //  theaterChase(strip.Color(0, 0, 127), 50); // Blue
+  //
+  //  rainbow(20);
+  //  rainbowCycle(20);
+  //  theaterChaseRainbow(50);
 
+  colorBreath(255, 60, 0, 10); // Orange
+  colorBreath(0, 0, 255, 10); // Blue
 
-colorWipe(strip.Color(255, 130, 0), 50); // Orange
-colorWipe(strip.Color(0, 0, 255), 50); // Blue
+}
 
+void colorBreath(int r, int g, int b, uint8_t wait) {
+  for (uint16_t i = 50; i < 255; i++) {
+    for (uint16_t j = 0; j < strip.numPixels(); j++) {
+      strip.setPixelColor(j, strip.Color((int)r * i/255, (int)g * i/255, (int)b * i/255));
+    }
+    strip.show();
+    delay(wait);
+  }
+
+  for (uint16_t i = 255; i > 50; i--) {
+    for (uint16_t j = 0; j < strip.numPixels(); j++) {
+      strip.setPixelColor(j, strip.Color((int)r * i/255, (int)g * i/255, (int)b * i/255));
+    }
+    strip.show();
+    delay(wait);
+  }
 }
 
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
-  for(uint16_t i=0; i<strip.numPixels(); i++) {
+  for (uint16_t i = 0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
@@ -65,9 +82,9 @@ void colorWipe(uint32_t c, uint8_t wait) {
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
-  for(j=0; j<256; j++) {
-    for(i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i+j) & 255));
+  for (j = 0; j < 256; j++) {
+    for (i = 0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel((i + j) & 255));
     }
     strip.show();
     delay(wait);
@@ -78,8 +95,8 @@ void rainbow(uint8_t wait) {
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
 
-  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
-    for(i=0; i< strip.numPixels(); i++) {
+  for (j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
+    for (i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
@@ -89,17 +106,17 @@ void rainbowCycle(uint8_t wait) {
 
 //Theatre-style crawling lights.
 void theaterChase(uint32_t c, uint8_t wait) {
-  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
-    for (int q=0; q < 3; q++) {
-      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, c);    //turn every third pixel on
+  for (int j = 0; j < 10; j++) { //do 10 cycles of chasing
+    for (int q = 0; q < 3; q++) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+        strip.setPixelColor(i + q, c);  //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, 0);        //turn every third pixel off
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+        strip.setPixelColor(i + q, 0);      //turn every third pixel off
       }
     }
   }
@@ -107,17 +124,17 @@ void theaterChase(uint32_t c, uint8_t wait) {
 
 //Theatre-style crawling lights with rainbow effect
 void theaterChaseRainbow(uint8_t wait) {
-  for (int j=0; j < 256; j++) {     // cycle all 256 colors in the wheel
-    for (int q=0; q < 3; q++) {
-      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, Wheel( (i+j) % 255));    //turn every third pixel on
+  for (int j = 0; j < 256; j++) {   // cycle all 256 colors in the wheel
+    for (int q = 0; q < 3; q++) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+        strip.setPixelColor(i + q, Wheel( (i + j) % 255)); //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, 0);        //turn every third pixel off
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+        strip.setPixelColor(i + q, 0);      //turn every third pixel off
       }
     }
   }
@@ -127,10 +144,10 @@ void theaterChaseRainbow(uint8_t wait) {
 // The colours are a transition r - g - b - back to r.
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
-  if(WheelPos < 85) {
+  if (WheelPos < 85) {
     return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
   }
-  if(WheelPos < 170) {
+  if (WheelPos < 170) {
     WheelPos -= 85;
     return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
