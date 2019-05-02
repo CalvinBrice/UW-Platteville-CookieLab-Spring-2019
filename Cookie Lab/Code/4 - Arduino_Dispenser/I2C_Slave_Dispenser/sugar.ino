@@ -1,10 +1,9 @@
-void sugar(int quantity) {
+void sugar() {
   switch (mode) {
     case 0:
       // step one revolution  in one direction:
-//      Steps = quantity * 200;
-      Serial.print("Number of steps=");
-      Serial.println(Steps);
+      Steps = quantity * 200;
+      Serial.println("Number of steps = "+Steps);
       myMotor5->step(Steps, FORWARD, DOUBLE);
       Serial.println("Running sugar dispenser");
       myMotor5->release(); //end function be removing power from the motor
@@ -20,4 +19,5 @@ void sugar(int quantity) {
     default:
       break;
   }
+  reset();
 }

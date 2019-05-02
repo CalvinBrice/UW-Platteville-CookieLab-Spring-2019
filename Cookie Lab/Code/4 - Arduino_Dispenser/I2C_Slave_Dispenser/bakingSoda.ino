@@ -1,10 +1,9 @@
-void bakingSoda(int quantity) {
+void bakingSoda() {
   switch (mode) {
     case 0:
       // step one revolution  in one direction:
       Steps = quantity * 40;
-      Serial.print("Number of steps=");
-      Serial.println(Steps);
+      Serial.println("Number of steps = "+Steps);
       myMotor6->step(Steps, FORWARD, INTERLEAVE);
       delay(250);
       myMotor6->step(Steps, BACKWARD, INTERLEAVE);
@@ -22,4 +21,5 @@ void bakingSoda(int quantity) {
     default:
       break;
   }
+  reset();
 }

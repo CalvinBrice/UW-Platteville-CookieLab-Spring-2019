@@ -1,10 +1,9 @@
-void salt(int quantity) {
+void salt() {
   switch (mode) {
     case 0:
       // step one revolution  in one direction:
       Steps = quantity * 200;
-      Serial.print("Number of steps=");
-      Serial.println(Steps);
+      Serial.println("Number of steps = "+Steps);
       myMotor10->step(Steps, FORWARD, DOUBLE);
       Serial.println("Running salt dispenser");
       myMotor10->release(); //end function be removing power from the motor
@@ -20,4 +19,5 @@ void salt(int quantity) {
     default:
       break;
   }
+  reset();
 }

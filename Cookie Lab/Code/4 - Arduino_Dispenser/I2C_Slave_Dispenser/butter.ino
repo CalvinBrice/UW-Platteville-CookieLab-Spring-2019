@@ -1,10 +1,9 @@
-void butter(int quantity) {
+void butter() {
   switch (mode) {
     case 0:
       // step one revolution  in one direction:
       Steps = quantity * 100; //calibrate the multiplication factor as necessary to match the dispensing scale shown on the interface
-      Serial.print("Number of steps=");
-      Serial.println(Steps);
+      Serial.println("Number of steps = "+Steps);
       myMotor1->setSpeed(100);
       myMotor1->step(Steps, FORWARD, DOUBLE);
       Serial.println("Running butter dispenser");
@@ -23,4 +22,5 @@ void butter(int quantity) {
     default:
       break;
   }
+  reset();
 }

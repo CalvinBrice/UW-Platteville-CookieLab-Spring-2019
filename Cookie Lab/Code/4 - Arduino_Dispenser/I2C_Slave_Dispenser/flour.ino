@@ -1,10 +1,9 @@
-void flour(int quantity) {
+void flour() {
   switch (mode) {
     case 0:
       // step one revolution  in one direction:
       Steps = quantity * 140;
-      Serial.print("Number of steps=");
-      Serial.println(Steps);
+      Serial.println("Number of steps = "+Steps);
       myMotor12->run(FORWARD); //Starting the agitator and delaying for one second
       delay(1000);
       myMotor9->step(Steps, FORWARD, INTERLEAVE); //Starting the flour dispenser
@@ -24,4 +23,5 @@ void flour(int quantity) {
     default:
       break;
   }
+  reset();
 }
