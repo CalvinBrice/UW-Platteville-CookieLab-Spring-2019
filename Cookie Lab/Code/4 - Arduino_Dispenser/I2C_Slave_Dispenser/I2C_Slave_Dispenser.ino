@@ -1,7 +1,7 @@
 // I2C Slave 1
 // Controls the entire dispenser
 
-#include <Wire.h>                // Include the required Wire library for I2C
+#include <Wire.h> // Include the required Wire library for I2C
 #include <Adafruit_MotorShield.h>
 
 #define STEPS_PER_REV 200

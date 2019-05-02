@@ -30,7 +30,7 @@ struct Ingredients {
 };
 
 Ingredients ingredient[] = { // Sets default parameters for each ingredient
-     // location, straight track?, quantity
+  // location, straight track?, quantity
   {LOCATION_BAY1,   straight_track, 0},
   {LOCATION_BAY2,   straight_track, 0},
   {LOCATION_BAY3,   straight_track, 0},
@@ -57,20 +57,36 @@ void setup() {
   Serial.begin(9600);
 }
 
+//void serialEvent() {
+//  while (!Serial.available());
+//  int leng = Serial.read();
+//  while (Serial.available() < leng);
+//  int buf[leng];
+//  for (int i = 0; i < leng; i++) buf[i] = Serial.read();
+//  Wire.beginTransmission(8);
+//  Wire.write(leng);
+//  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
+//  Wire.endTransmission();
+//}
+
 void loop() {
-  Serial.println("Fetching recipe");
+  while (!Serial.available());
+  int leng = Serial.read();
+  while (Serial.available() < leng);
+  int buf[leng];
+  for (int i = 0; i < leng; i++) buf[i] = Serial.read();
+  Wire.beginTransmission(8);
+  Wire.write(leng);
+  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
+  Wire.endTransmission();
+//  Serial.println("Fetching recipe");
   fetchRecipe(); // Currently receives recipe via serial monitor
-  delay(1000);
-  Serial.println("Fetching ingredients");
+//  Serial.println("Fetching ingredients");
   fetchIngredients();
-  delay(1000);
-  Serial.println("Mixing ingredients");
+//  Serial.println("Mixing ingredients");
   mix();
-  delay(1000);
-  Serial.println("Forming ingredients");
+//  Serial.println("Forming ingredients");
   form();
-  delay(1000);
-  Serial.println("Baking ingredients");
+//  Serial.println("Baking ingredients");
   bake(); // Not our problem
-  delay(1000);
 }
