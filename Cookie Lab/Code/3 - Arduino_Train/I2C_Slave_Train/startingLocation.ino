@@ -1,6 +1,4 @@
 void startingLocation(){
-  Serial.println("Going to origin");
-//  while (!digitalRead(CAP_SENSOR)) digitalPotWrite(BACKWARD);
+  while (!digitalRead(CAP_SENSOR)) digitalPotWrite(BACKWARDD);
   digitalPotWrite(STOP);
-  Serial.println("Finished going to origin");
 }

@@ -1,60 +1,90 @@
 // I2C Slave 2
 // Controls the cart and its position sensors
 
-#include <Wire.h>                // Include the required Wire library for I2C
+#include <Wire.h> // Include the required Wire library for I2C
 #include <SPI.h>
 
 const byte ADDRESS = 0x00;  // Digital pot address
 const int I2C_ADDRESS = 2;  // SPI address for this controller
 const int CS = 10;  // Digital pot controlling pin
-const int FORWARD = 69;  // Digital pot value to go forward
-const int BACKWARD = 57;  // Digital pot value to go backward
-const int TURBO = 5; // A little extra speed for longer distances [not in the code anywhere yet] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-const int STOP = 60;  // Digital pot value to stop
-const int CAP_SENSOR = 2; // Change to whatever pin we use <<<<<<<<<<<<<<
-boolean straight = true;
-uint8_t variable;
+uint8_t destination;
 
-enum {DO_NOTHING = 0, MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
-uint8_t command;
+enum Commands {DO_NOTHING = 0, MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
+enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2}; // ULTRASONIC1 is on the straight track
+enum Speeds {STOP = 0, TURBO = 5, BACKWARDD = 57, FORWARDD = 69}; // BACKWARD and FORWARD are reserved
+Commands command = DO_NOTHING;
+Sensors sensor = NONE;
+Speeds trainSpeed = STOP;
 
-boolean isTrackStraight; // This allows the switchTrack function to only be called iff the track is changing directions
 boolean isTrainAtLocation; // Sent to master to confirm that the train is at the desired location
 
+// Ultrasonic sensor on straight track
+int ultrasonicRead1 = A1; // Pin to read ADC value for ultrasonic sensor #1
+int ultrasonicPower1 = 10; // Pin to power the ultrasonic sensor #1
+int ultrasonicValue1 = 0; // Sensor reads zero when it sees nothing
+
+// Ultrasonic sensor on curved track
+int ultrasonicRead2 = A0; // Pin to read ADC value for ultrasonic sensor #2
+int ultrasonicPower2 = 11; // Pin to power the ultrasonic sensor #2
+int ultrasonicValue2 = 0; // Sensor reads zero when it sees nothing
+
+// Capacitive Sensor
+int capSensor = 12; // Pin to read the capacitor sensor's value
+bool isTrainAtOrigin = false; // Variable to save the capacitor sensor's value
+
+// Switch Pin
+int switchPin = 8; // Pin to write to the switch
+boolean isSwitchOnRight = false; // Variable to save the switch's direction
+boolean straight = isSwitchOnRight;
+
 void setup() {
-  command = 0;
-  pinMode(CAP_SENSOR, INPUT); // Define the capacitor sensor output pin as an input for the Arduino
-  Serial.begin(9600);
-  SPI.begin();
+  Serial.begin(9600); // Starts the communication from the arduino to the serial line (See serial monitor)
+  SPI.begin(); // Starts the communication between the arduino and the digital potentiometer controlling the train
   Wire.begin(I2C_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
   Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
   Wire.onRequest(receiveRequest); // Attach a function to trigger when the master requests something from this slave
   startingLocation(); // Put train at starting location (back against the capacitive sensor)
   switchTrack(straight);  // Changes the direction of the track at the intersection
+  pinMode(ultrasonicPower1, OUTPUT); // Initialization of ultrasonic sensor #1
+  pinMode(ultrasonicPower2, OUTPUT); // Initialization of ultrasonic sensor #2
+  pinMode(switchPin, OUTPUT); // Initialization of switch
+  pinMode(capSensor, INPUT); // Initialization of capacitive sensor
 }
 
 void receiveEvent(int howMany) {
   while (!Wire.available()) Serial.println(Wire.available());
   command = Wire.read();
-  variable = Wire.read();
+  destination = Wire.read();
   straight = Wire.read();
-  //  Serial.print(command);
-  //  Serial.print("  ");
-  //  Serial.print(variable);
-  //  Serial.print("  ");
-  //  Serial.println(straight);
 }
 
-void receiveRequest() { // Not sure if I need this yet
-  Wire.write(isTrainAtLocation);
-  Serial.println(isTrainAtLocation);
+void receiveRequest() {
+  switch (sensor) {
+    case ULTRASONIC1:
+      Wire.write(ultrasonicValue1);
+      break;
+    case ULTRASONIC2:
+      Wire.write(ultrasonicValue2);
+      break;
+    case CAP_SENSOR:
+      Wire.write(isTrainAtOrigin);
+      break;
+    case NONE:
+      Serial.println("No sensor selected"); // thisSensor = NONE
+      break;
+    default:
+      Serial.println("Error selecting sensor"); // thisSensor is not equal to Sensors enum
+      break;
+  }
 }
 
 void loop() {
-  isTrainAtLocation = false;
+  if (straight) sensor = ULTRASONIC1;
+  else if (!straight) sensor = ULTRASONIC2;
+
   switch (command) {
     case MOVE:
-      findIngredient(variable, straight);
+      findIngredient(destination, sensor);
       break;
     case GO_TO_ORIGIN:
       startingLocation();
@@ -62,7 +92,11 @@ void loop() {
     case SWITCH_TRACK:
       switchTrack(straight);
       break;
+    case DO_NOTHING:
+      Serial.println("No action required");
+      break;
     default:
-      Serial.println("Command equals DO_NOTHING");
+      Serial.println("Error selecting command"); // command is not equal to Commands enum
+      break;
   }
 }
