@@ -42,7 +42,7 @@ Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour a
 void setup() {
   setupMotors();
   Serial.begin(9600);
-  Wire.begin(1);                 // Start the I2C Bus as Slave on address 1
+  Wire.begin(1);
   Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received.
 }
 
@@ -51,32 +51,10 @@ void receiveEvent(int howMany) {
   bay = Wire.read();               // Read first byte from the I2C_Master
   quantity = Wire.read();          // Read second byte from the I2C_Master
   mode = Wire.read();              // Read third byte from the I2C_Master
+  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
 }
 
-//void serialEvent() {
-  //  bool that = true;
-  //  while (Serial.available() < 10) {
-  //    if (that == true) Serial.println("waiting...");
-  //    that = false;
-  //  }
-//  char buf[3];
-//  for (int i = 0; i < 3; i++) buf[i] = Serial.read();
-//  bay = buf[0] - '0';
-//  quantity = buf[1] - '0';
-//  mode = buf[2] - '0';
-//  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
-//}
-
 void loop() {
-  // dispense <quantity> at <bay> ingredient dispenser
-  while (Serial.available()<=3);
-  char buf[] = {0,0,0};
-  for (int i = 0; i < 3; i++) buf[i] = Serial.read();
-  bay = buf[0] - '0';
-  quantity = buf[1] - '0';
-  mode = buf[2] - '0';
-  while (Serial.available()) Serial.read();
-  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
   switch (bay) {
     case 1:
       butter();

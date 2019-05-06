@@ -9,17 +9,20 @@
 #define ARM_SLAVE 3
 #define MIX_FORM_SLAVE 4
 #define NUMBER_OF_BAYS 11 // Don't worry about zero-based numbering, simply input normal number of bays and update quantity array
-#define LOCATION_BAY1 50 // Distance from ultrasonic sensor to dispenser (units in cm [will be converted to from voltage])
-#define LOCATION_BAY2 50 // Try to automate this more somehow (stretch goal)
-#define LOCATION_BAY3 100
-#define LOCATION_BAY4 100
-#define LOCATION_BAY5 200
-#define LOCATION_BAY6 200
-#define LOCATION_BAY7 100
-#define LOCATION_BAY8 100
-#define LOCATION_BAY9 50
-#define LOCATION_BAY10 50
-#define LOCATION_BAY11 10
+
+// Distance from ultrasonic sensor to center of cup (ADC units)
+// Try to automate this more somehow (stretch goal)
+#define LOCATION_BAY1 151 // Butter
+#define LOCATION_BAY2 406 // Sugar
+#define LOCATION_BAY3 559 // Molasses
+#define LOCATION_BAY4 744 // Vanilla
+#define LOCATION_BAY5 931 // Egg
+#define LOCATION_BAY6 66 // Add in 2
+#define LOCATION_BAY7 237 // Chocolate Chips
+#define LOCATION_BAY8 387 // Salt
+#define LOCATION_BAY9 690 // Baking Soda
+#define LOCATION_BAY10 801 // Flour
+#define LOCATION_BAY11 955 // Oatmeal
 
 boolean straight_track;
 
@@ -50,6 +53,13 @@ enum {DO_NOTHING = 0,
       SWITCH_TRACK
      };
 
+enum MOTOR_OPERATION {NONE = 2,
+                      DISPENSE = 0,
+                      MOVE_UP = 1,
+                      MOVE_DOWN = -1
+                     };
+MOTOR_OPERATION mode = NONE;
+
 void moveTrain(int slave, byte command, byte variable = 0, byte straight = true);
 
 void setup() {
@@ -57,36 +67,24 @@ void setup() {
   Serial.begin(9600);
 }
 
-//void serialEvent() {
-//  while (!Serial.available());
-//  int leng = Serial.read();
-//  while (Serial.available() < leng);
-//  int buf[leng];
-//  for (int i = 0; i < leng; i++) buf[i] = Serial.read();
-//  Wire.beginTransmission(8);
-//  Wire.write(leng);
-//  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
-//  Wire.endTransmission();
-//}
-
 void loop() {
   while (!Serial.available());
   int leng = Serial.read();
   while (Serial.available() < leng);
   int buf[leng];
   for (int i = 0; i < leng; i++) buf[i] = Serial.read();
-  Wire.beginTransmission(8);
-  Wire.write(leng);
-  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
-  Wire.endTransmission();
-//  Serial.println("Fetching recipe");
+  //  Wire.beginTransmission(8);
+  //  Wire.write(leng);
+  //  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
+  //  Wire.endTransmission();
+  //  Serial.println("Fetching recipe");
   fetchRecipe(); // Currently receives recipe via serial monitor
-//  Serial.println("Fetching ingredients");
+  //  Serial.println("Fetching ingredients");
   fetchIngredients();
-//  Serial.println("Mixing ingredients");
+  //  Serial.println("Mixing ingredients");
   mix();
-//  Serial.println("Forming ingredients");
+  //  Serial.println("Forming ingredients");
   form();
-//  Serial.println("Baking ingredients");
+  //  Serial.println("Baking ingredients");
   bake(); // Not our problem
 }

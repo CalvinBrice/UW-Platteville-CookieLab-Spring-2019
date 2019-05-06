@@ -27,7 +27,7 @@ void setupMotors() {
   myMotor11->setSpeed(60);  //  M&M's
   // DC motor speed (0 to 255) using PWM duty cycle.
   // This number does not control the motor speed, just the signal to the relay
-  myMotor12->setSpeed(255);
+  myMotor12->setSpeed(255); // Agitator
 
   //Remove all power from the motors
   myMotor1->release();
