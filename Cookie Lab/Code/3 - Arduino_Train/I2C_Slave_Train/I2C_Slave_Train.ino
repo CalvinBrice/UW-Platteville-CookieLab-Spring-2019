@@ -2,19 +2,17 @@
 // Controls the cart and its position sensors
 
 #include <Wire.h> // Include the required Wire library for I2C
-#include <SPI.h>
 
-const byte ADDRESS = 0x00;  // Digital pot address
-const int I2C_ADDRESS = 2;  // SPI address for this controller
-const int CS = 10;  // Digital pot controlling pin
+#define I2C_SLAVE_ADDRESS 2
+
 uint8_t destination;
 
 enum Commands {DO_NOTHING = 0, MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
 enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2}; // ULTRASONIC1 is on the straight track
-enum Speeds {STOP = 0, TURBO = 5, BACKWARDD = 57, FORWARDD = 69}; // BACKWARD and FORWARD are reserved
+enum Speeds {STOP = 100, BACKWARDD = 50, FORWARDD = 150}; // BACKWARD and FORWARD are reserved
 Commands command = DO_NOTHING;
 Sensors sensor = NONE;
-Speeds trainSpeed = STOP;
+//Speeds trainSpeed = STOP;
 
 boolean isTrainAtLocation; // Sent to master to confirm that the train is at the desired location
 
@@ -39,8 +37,7 @@ boolean straight = isSwitchOnRight;
 
 void setup() {
   Serial.begin(9600); // Starts the communication from the arduino to the serial line (See serial monitor)
-  SPI.begin(); // Starts the communication between the arduino and the digital potentiometer controlling the train
-  Wire.begin(I2C_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
+  Wire.begin(I2C_SLAVE_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
   Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
   Wire.onRequest(receiveRequest); // Attach a function to trigger when the master requests something from this slave
   startingLocation(); // Put train at starting location (back against the capacitive sensor)
@@ -87,7 +84,7 @@ void loop() {
       findIngredient(destination, sensor);
       break;
     case GO_TO_ORIGIN:
-      startingLocation();
+      goingToOrigin();
       break;
     case SWITCH_TRACK:
       switchTrack(straight);

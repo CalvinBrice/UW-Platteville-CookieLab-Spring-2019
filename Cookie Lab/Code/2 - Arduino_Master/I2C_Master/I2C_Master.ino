@@ -4,10 +4,6 @@
 
 #define CURVED 0
 #define STRAIGHT 1
-#define DISPENSER_SLAVE 1
-#define TRAIN_SLAVE 2
-#define ARM_SLAVE 3
-#define MIX_FORM_SLAVE 4
 #define NUMBER_OF_BAYS 11 // Don't worry about zero-based numbering, simply input normal number of bays and update quantity array
 
 // Distance from ultrasonic sensor to center of cup (ADC units)
@@ -47,18 +43,13 @@ Ingredients ingredient[] = { // Sets default parameters for each ingredient
   {LOCATION_BAY11, !straight_track, 0},
 };
 
-enum {DO_NOTHING = 0,
-      MOVE,
-      GO_TO_ORIGIN,
-      SWITCH_TRACK
-     };
-
-enum MOTOR_OPERATION {NONE = 2,
-                      DISPENSE = 0,
-                      MOVE_UP = 1,
-                      MOVE_DOWN = -1
-                     };
-MOTOR_OPERATION mode = NONE;
+enum {DO_NOTHING = 0,MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
+enum Slaves {NO_ONE, DISPENSER, TRAIN, ARM, MIX, FORM};
+enum MotorOperation {NULL_OPERATION = 2, DISPENSE = 0, MOVE_UP = 1, MOVE_DOWN = -1};
+enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2}; // ULTRASONIC1 is on the straight track
+MotorOperation mode = NULL_OPERATION;
+Sensors slave = NONE;
+Sensors sensor = NONE;
 
 void moveTrain(int slave, byte command, byte variable = 0, byte straight = true);
 
@@ -68,17 +59,8 @@ void setup() {
 }
 
 void loop() {
-  while (!Serial.available());
-  int leng = Serial.read();
-  while (Serial.available() < leng);
-  int buf[leng];
-  for (int i = 0; i < leng; i++) buf[i] = Serial.read();
-  //  Wire.beginTransmission(8);
-  //  Wire.write(leng);
-  //  for (int i = 0; i < leng; i++) Wire.write(buf[i]);
-  //  Wire.endTransmission();
   //  Serial.println("Fetching recipe");
-  fetchRecipe(); // Currently receives recipe via serial monitor
+  fetchRecipe();
   //  Serial.println("Fetching ingredients");
   fetchIngredients();
   //  Serial.println("Mixing ingredients");
