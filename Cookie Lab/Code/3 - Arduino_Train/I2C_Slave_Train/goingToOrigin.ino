@@ -1,4 +1,4 @@
 void goingToOrigin(){
-  while (!digitalRead(CAP_SENSOR)) analogWrite(trainControlPin, BACKWARDD);
-  analogWrite(trainControlPin, STOP);
+  while (!digitalRead(capSensorPin)) analogWrite(cartControlPin, BACKWARDD);
+  analogWrite(cartControlPin, STOP);
 }

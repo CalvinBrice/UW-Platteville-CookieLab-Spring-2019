@@ -43,10 +43,10 @@ Ingredients ingredient[] = { // Sets default parameters for each ingredient
   {LOCATION_BAY11, !straight_track, 0},
 };
 
-enum {DO_NOTHING = 0,MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
-enum Slaves {NO_ONE, DISPENSER, TRAIN, ARM, MIX, FORM};
+enum {DO_NOTHING = 0, MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
+enum Slaves {NO_ONE, DISPENSER, TRAIN, ARM, MIX_AND_FORM};
 enum MotorOperation {NULL_OPERATION = 2, DISPENSE = 0, MOVE_UP = 1, MOVE_DOWN = -1};
-enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2}; // ULTRASONIC1 is on the straight track
+enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2, CAP_SENSOR}; // ULTRASONIC1 is on the straight track
 MotorOperation mode = NULL_OPERATION;
 Sensors slave = NONE;
 Sensors sensor = NONE;
@@ -56,17 +56,18 @@ void moveTrain(int slave, byte command, byte variable = 0, byte straight = true)
 void setup() {
   Wire.begin(); // Start the I2C Bus as Master
   Serial.begin(9600);
+  pinMode(LED_BUILTIN,OUTPUT);
 }
 
 void loop() {
-  //  Serial.println("Fetching recipe");
+//  Serial.println("Fetching recipe");
   fetchRecipe();
-  //  Serial.println("Fetching ingredients");
+//  Serial.println("Fetching ingredients");
   fetchIngredients();
-  //  Serial.println("Mixing ingredients");
+//  Serial.println("Mixing ingredients");
   mix();
-  //  Serial.println("Forming ingredients");
+//  Serial.println("Forming ingredients");
   form();
-  //  Serial.println("Baking ingredients");
+//  Serial.println("Baking ingredients");
   bake(); // Not our problem
 }

@@ -8,7 +8,7 @@
 uint8_t destination;
 
 enum Commands {DO_NOTHING = 0, MOVE, GO_TO_ORIGIN, SWITCH_TRACK};
-enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2}; // ULTRASONIC1 is on the straight track
+enum Sensors {NONE, ULTRASONIC1, ULTRASONIC2, CAP_SENSOR}; // ULTRASONIC1 is on the straight track
 enum Speeds {STOP = 100, BACKWARDD = 50, FORWARDD = 150}; // BACKWARD and FORWARD are reserved
 Commands command = DO_NOTHING;
 Sensors sensor = NONE;
@@ -27,7 +27,7 @@ int ultrasonicPower2 = 11; // Pin to power the ultrasonic sensor #2
 int ultrasonicValue2 = 0; // Sensor reads zero when it sees nothing
 
 // Capacitive Sensor
-int capSensor = 12; // Pin to read the capacitor sensor's value
+int capSensorPin = 12; // Pin to read the capacitor sensor's value
 bool isTrainAtOrigin = false; // Variable to save the capacitor sensor's value
 
 // Switch Pin
@@ -35,24 +35,36 @@ int switchPin = 8; // Pin to write to the switch
 boolean isSwitchOnRight = false; // Variable to save the switch's direction
 boolean straight = isSwitchOnRight;
 
+// Cart Control Pin
+int trackPower = 2; // Pin that powers the track when set HIGH
+int cartControlPin = 3; // Pin that controls the speed and direction of train
+
 void setup() {
   Serial.begin(9600); // Starts the communication from the arduino to the serial line (See serial monitor)
   Wire.begin(I2C_SLAVE_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
   Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
   Wire.onRequest(receiveRequest); // Attach a function to trigger when the master requests something from this slave
-  startingLocation(); // Put train at starting location (back against the capacitive sensor)
+  digitalWrite(cartControlPin, HIGH); // Turns on track
+  analogWrite(cartControlPin, STOP);
+  delay(100000);
+  goingToOrigin(); // Put train at starting location (back against the capacitive sensor)
   switchTrack(straight);  // Changes the direction of the track at the intersection
   pinMode(ultrasonicPower1, OUTPUT); // Initialization of ultrasonic sensor #1
   pinMode(ultrasonicPower2, OUTPUT); // Initialization of ultrasonic sensor #2
   pinMode(switchPin, OUTPUT); // Initialization of switch
-  pinMode(capSensor, INPUT); // Initialization of capacitive sensor
+  pinMode(capSensorPin, INPUT); // Initialization of capacitive sensor
+  pinMode(trackPower, OUTPUT); // Intitialization of track power
+  pinMode(cartControlPin, INPUT); // Initilization of cart's controlling pin
 }
 
 void receiveEvent(int howMany) {
-  while (!Wire.available()) Serial.println(Wire.available());
-  command = Wire.read();
-  destination = Wire.read();
-  straight = Wire.read();
+  if (howMany > 1) {
+    while (!Wire.available()) Serial.println(Wire.available());
+    command = Wire.read();
+    destination = Wire.read();
+    straight = Wire.read();
+  }
+  else if (howMany == 1) sensor = Wire.read();
 }
 
 void receiveRequest() {
@@ -76,11 +88,10 @@ void receiveRequest() {
 }
 
 void loop() {
-  if (straight) sensor = ULTRASONIC1;
-  else if (!straight) sensor = ULTRASONIC2;
-
   switch (command) {
     case MOVE:
+      if (straight) sensor = ULTRASONIC1;
+      else if (!straight) sensor = ULTRASONIC2;
       findIngredient(destination, sensor);
       break;
     case GO_TO_ORIGIN:

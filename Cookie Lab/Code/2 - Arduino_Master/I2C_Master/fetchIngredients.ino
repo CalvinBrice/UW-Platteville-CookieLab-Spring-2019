@@ -1,4 +1,5 @@
 void fetchIngredients() {
+  digitalWrite(LED_BUILTIN, HIGH);
   moveTrain(TRAIN, GO_TO_ORIGIN); // Tell slave 2 to go to starting position
   bool tempDirection = ingredient[0].trackDirection; // Initializes tempDirection to the tracks current direction
   for (int i = 0; i < NUMBER_OF_BAYS; i++) {
@@ -14,10 +15,8 @@ void fetchIngredients() {
       else if (!ingredient[i].trackDirection) (sensor = ULTRASONIC2);
       else Serial.println("Error selecting ultrasonic sensor");
       requestInfoFromSlave(TRAIN, sensor);
-
       dispenseIngredients(DISPENSER, i, ingredient[i].quantity); // Dispense ingredient
       requestInfoFromSlave(DISPENSER);
     }
   }
-}
 }

@@ -4,7 +4,7 @@ void findIngredient(int destination, int sensor) {
     case ULTRASONIC1:
       ultrasonicValue2 = analogRead(ultrasonicRead2);
       while (destination < ultrasonicValue1 || destination > ultrasonicValue1) {
-        if (destination > ultrasonicValue1) analogWrite(cartControlPin, FOWARDD);
+        if (destination > ultrasonicValue1) analogWrite(cartControlPin, FORWARDD);
         else if (destination < ultrasonicValue1) analogWrite(cartControlPin, BACKWARDD);
         ultrasonicValue2 = analogRead(ultrasonicRead2);
       }
