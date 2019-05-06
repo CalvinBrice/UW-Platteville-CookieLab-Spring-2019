@@ -3,7 +3,7 @@
 #include <avr/power.h>
 #endif
 
-#define PIN D6
+#define PIN 6
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -13,7 +13,7 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(144, PIN, NEO_GRB + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -53,7 +53,7 @@ void loop() {
 }
 
 void colorBreath(int r, int g, int b, uint8_t wait) {
-  for (uint16_t i = 50; i < 255; i++) {
+  for (uint16_t i = 0; i < 255; i++) {
     for (uint16_t j = 0; j < strip.numPixels(); j++) {
       strip.setPixelColor(j, strip.Color((int)r * i/255, (int)g * i/255, (int)b * i/255));
     }
@@ -61,7 +61,7 @@ void colorBreath(int r, int g, int b, uint8_t wait) {
     delay(wait);
   }
 
-  for (uint16_t i = 255; i > 50; i--) {
+  for (uint16_t i = 255; i > 0; i--) {
     for (uint16_t j = 0; j < strip.numPixels(); j++) {
       strip.setPixelColor(j, strip.Color((int)r * i/255, (int)g * i/255, (int)b * i/255));
     }
