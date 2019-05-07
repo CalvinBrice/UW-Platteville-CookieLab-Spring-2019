@@ -1,5 +1,12 @@
+//----------------------------------------
+// i2c handler
+//
 // Format of messages to be received is:
-// (int FINGER, int WRIST, int HEIGHT, int, ROTATION)
+//  int FINGER
+//  int WRIST
+//  int HEIGHT
+//  int ROTATION
+//----------------------------------------
 
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
@@ -9,12 +16,12 @@ void receiveEvent(int howMany) {
   wrist_pos = Wire.read();
   height_pos = Wire.read();
   rotation_pos = Wire.read();
-  if (debug == true){
+  if (debug == true) {
     Debug();
   }
 }
 
-void Debug(){
+void Debug() {
   Serial.print("finger_pos: ");
   Serial.println(finger_pos);
   Serial.print("wrist_pos: ");

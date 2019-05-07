@@ -4,7 +4,7 @@
 //  Repository: https://github.com/CalvinBrice/UW-Platteville-CookieLab-Spring-2019-
 //
 //  Author(s): Calvin Brice, Austen Owens
-//  Date: 4/27/2019
+//  Date: 5/7/2019
 //-----------------------------------------
 
 // This should be automated so that a sequence of positional values may be transmitted via
@@ -24,11 +24,12 @@ int LED_PIN = 13;
 int MOTOR_STEP_PIN = 3; // --> PUL+
 int MOTOR_DIRECTION_PIN = 4; // --> DIR+
 int LIMIT_SWITCH_PIN = 5;// --> Limit switch RED wire
-
-//Servo pin setup
 int FINGER_SERVO = 9;
 int WRIST_SERVO = 10;
 int ROTATION_SERVO = 11;
+
+//Rewrite so that these are stored in an array... or a struct
+//this will allow for easier access and less variables to keep track of
 
 //Positional input parameters and initialization (pos = position)
 int finger_pos = 0;     // 0~180 deg
@@ -74,13 +75,26 @@ void setup()
   stepper.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
   stepper.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
+  // set position of arm so it doesn't hit anything first
+
+
   //Begin homing procedure
   setHome();
 
   Debug();
+  setHeight(250);
+  sampleMotion(finger_pos, wrist_pos, height_pos, rotation_pos);
 }
 
 void loop()
 {
-  setHeight(250);
+  //State machine
+  //  (actually the state machine should be on the master arduino...
+  //  this one should only be receiving movement commmands and interpreting them)
+
+
+}
+
+void motion(int finger_pos, int wrist_pos, int height_pos, int rotation_pos) {
+
 }
