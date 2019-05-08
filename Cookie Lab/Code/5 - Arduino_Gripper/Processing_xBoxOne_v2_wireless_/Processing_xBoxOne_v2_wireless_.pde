@@ -87,10 +87,10 @@ float stickMove(float input, float output, float lowerBound, float upperBound) {
   wristPos = cont.getButton("wristRotationCW").pressed();
   if (wristPos == true) {
     // Rotate right:
-    arduino.servoWrite(Wrist_PIN, 180);
+    arduino.servoWrite(Wrist_PIN, 107);
   } else {
     // Rotate left:
-    arduino.servoWrite(Wrist_PIN, 0);
+    arduino.servoWrite(Wrist_PIN, 6);
   }
 
   return output;
