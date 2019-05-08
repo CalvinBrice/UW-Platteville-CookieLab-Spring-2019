@@ -10,11 +10,11 @@ void molasses() {
       myMotor3->release(); //end function be removing power from the motor
       break;
     case MOVE_UP:
-      myMotor3->step(Jog, BACKWARD, DOUBLE);
+      myMotor3->step(Jog, FORWARD, DOUBLE);
       myMotor3->release(); //remove all power from the motor
       break;
     case MOVE_DOWN:
-      myMotor3->step(Jog, FORWARD, DOUBLE);
+      myMotor3->step(Jog, BACKWARD, DOUBLE);
       myMotor3->release(); //remove all power from the motor
       break;
     default:

@@ -41,10 +41,10 @@ Adafruit_StepperMotor *myMotor11 = AFMS_5.getStepper(STEPS_PER_REV, 1); //  M&M'
 Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour agitator using port 3 (M3)
 
 void setup() {
-  setupMotors();
   Serial.begin(9600);
+  setupMotors();
   Wire.begin(I2C_SLAVE_ADDRESS);
-  Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received.
+  Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
 }
 
 void receiveEvent(int howMany) {

@@ -12,12 +12,12 @@ void butter() {
       break;
     case MOVE_UP:
       myMotor1->setSpeed(1500);
-      myMotor1->step(ButterJog, BACKWARD, DOUBLE);
+      myMotor1->step(ButterJog, FORWARD, DOUBLE);
       myMotor1->release(); //remove all power from the motor
       break;
     case MOVE_DOWN:
       myMotor1->setSpeed(1500);
-      myMotor1->step(ButterJog, FORWARD, DOUBLE);
+      myMotor1->step(ButterJog, BACKWARD, DOUBLE);
       myMotor1->release(); //remove all power from the motor
       break;
     default:

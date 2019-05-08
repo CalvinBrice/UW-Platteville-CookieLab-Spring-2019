@@ -5,7 +5,7 @@ void setupMotors() {
   //
   //    public:
   //  }
-
+  Serial.println("Initializing shields (If 'Done initializing shields' doesn't print, kill power for 60 seconds to reset the system)");
   AFMS_0.begin();  // create with the default frequency 1.6KHz
   AFMS_1.begin();  // create with the default frequency 1.6KHz
   AFMS_2.begin();  // create with the default frequency 1.6KHz
@@ -13,6 +13,7 @@ void setupMotors() {
   AFMS_4.begin();  // create with the default frequency 1.6KHz
   AFMS_5.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
+  Serial.println("Done initializing shields");
 
   //Define motor speeds globally
   myMotor2->setSpeed(60);   //  Vanilla
