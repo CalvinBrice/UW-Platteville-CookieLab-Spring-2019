@@ -1,9 +1,9 @@
-// I2C Slave 2
+// I2C Slave 0x09
 // Controls the cart and its position sensors
 
 #include <Wire.h> // Include the required Wire library for I2C
 
-#define I2C_SLAVE_ADDRESS 2
+#define I2C_ADDRESS 0x09
 
 uint8_t destination;
 
@@ -41,7 +41,7 @@ int trackPWM = 3; // Pin that powers the track when set HIGH
 
 void setup() {
   Serial.begin(9600); // Starts the communication from the arduino to the serial line (See serial monitor)
-  Wire.begin(I2C_SLAVE_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
+  Wire.begin(I2C_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
   Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
   Wire.onRequest(receiveRequest); // Attach a function to trigger when the master requests something from this slave
   analogWrite(cartDirectionPin, STOP);
