@@ -10,17 +10,17 @@ struct Ingredients {
 
 Ingredients ingredient[] = { // Sets default parameters for each ingredient
   // location, straight track?, quantity
-  {151,  straight_track, 0}, // Butter
+  {151,  straight_track, 1}, // Butter
   {406,  straight_track, 1}, // Sugar
-  {559,  straight_track, 0}, // Molasses
+  {559,  straight_track, 1}, // Molasses
   {744,  straight_track, 1}, // Vanilla
-  {931,  straight_track, 0}, // Egg
+  {931,  straight_track, 1}, // Egg
   {66,  !straight_track, 1}, // Add in 2
-  {237, !straight_track, 0}, // Chocolate Chips
+  {237, !straight_track, 1}, // Chocolate Chips
   {387, !straight_track, 1}, // Salt
-  {690, !straight_track, 0}, // Baking Soda
+  {690, !straight_track, 1}, // Baking Soda
   {801, !straight_track, 1}, // Flour
-  {955, !straight_track, 0}, // Oatmeal
+  {955, !straight_track, 1}, // Oatmeal
 };
 
 // Ultrasonic sensor on straight track
@@ -73,6 +73,13 @@ void loop() {
     destinationArray[0] = (ingredient[i].location >> 8) & 0xFF; // maximum int unsigned value is 256
     destinationArray[1] = ingredient[i].location & 0xFF; // Converts ingredient[i].location to a 2 byte variable array (max value is now 65,536)
     if(ingredient[i].trackDirection) while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U1)); // Wait until cart is in position
+      if(i!=0)
+        if(ingredient[i-1].trackDirection != ingredient[i].trackDirection) {
+          //send cart backward
+          while(!readCapSensor())
+          //switch track direction
+          //send cart moving?
+        }
     else if(!ingredient[i].trackDirection) while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U2)); // Wait until cart is in position
     else Serial.println("Error in variable: trackDirection");
     Serial.println("The cart made it to the destination");
