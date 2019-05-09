@@ -1,10 +1,10 @@
-// I2C Slave 1
+// I2C Slave 0x08
 // Controls the entire dispenser
 
 #include <Wire.h> // Include the required Wire library for I2C
 #include <Adafruit_MotorShield.h>
 
-#define I2C_SLAVE_ADDRESS 0x09
+#define I2C_ADDRESS 0x08 // Address for the dispenser
 #define STEPS_PER_REV 200
 
 int bay = 0;
@@ -45,7 +45,7 @@ Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour a
 void setup() {
   Serial.begin(9600);
   setupMotors();
-  Wire.begin(I2C_SLAVE_ADDRESS);
+  Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveEvent); // Attach a function to trigger when something is received
   Wire.onRequest(requestEvent);
 }
@@ -55,10 +55,10 @@ void receiveEvent(int howMany) {
   bay = Wire.read();               // Read first byte from the I2C_Master
   quantity = Wire.read();          // Read second byte from the I2C_Master
   mode = Wire.read();              // Read third byte from the I2C_Master
-//  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
+  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
 }
 
-void requestEvet() {
+void requestEvent() {
   while(!doneDispensing);
   Wire.write(doneDispensing);
 }
