@@ -31,6 +31,14 @@ int ROTATION_SERVO = 11;
 //Rewrite so that these are stored in an array... or a struct
 //this will allow for easier access and less variables to keep track of
 
+
+// Structs
+struct armElement {
+  float set; //sets location of future position
+  float current; // holds current positional value
+  int8_t minmax[2]; // limit parameters
+}
+
 //Positional input parameters and initialization (pos = position)
 int finger_pos = 0;     // 0~180 deg
 int wrist_pos = 0;      // 0~180 deg
@@ -79,11 +87,11 @@ void setup()
 
 
   //Begin homing procedure
-  setHome();
+  //setHome();
 
   Debug();
-  setHeight(250);
-  sampleMotion(finger_pos, wrist_pos, height_pos, rotation_pos);
+  //setHeight(250);
+  //Motion(finger_pos, wrist_pos, height_pos, rotation_pos);
 }
 
 void loop()
@@ -96,5 +104,6 @@ void loop()
 }
 
 void motion(int finger_pos, int wrist_pos, int height_pos, int rotation_pos) {
-
+  // Finger
+  if ( == finger_pos && finger_pos == d)
 }
