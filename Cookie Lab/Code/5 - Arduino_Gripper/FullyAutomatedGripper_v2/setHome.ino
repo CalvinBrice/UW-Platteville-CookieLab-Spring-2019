@@ -7,12 +7,12 @@ void setHome()  //Function to home with limit switch
 {
   Serial.println("Moving to home position");
   // set the speed and acceleration rates for the stepper motor
-  stepper.setSpeedInMillimetersPerSecond(25.0);
-  stepper.setAccelerationInMillimetersPerSecondPerSecond(10.0);
+  stepperHeight.setSpeedInMillimetersPerSecond(25.0);
+  stepperHeight.setAccelerationInMillimetersPerSecondPerSecond(10.0);
 
   // move the motor toward the limit switch to find the "Home" position
   
-  if (stepper.moveToHomeInMillimeters(directionTowardHome, homingSpeedInMMPerSec, maxHomingDistanceInMM, LIMIT_SWITCH_PIN) != true)
+  if (stepperHeight.moveToHomeInMillimeters(directionTowardHome, homingSpeedInMMPerSec, maxHomingDistanceInMM, LIMIT_SWITCH_PIN) != true)
   {
     // this code is executed only if homing fails because it has moved farther
     // than maxHomingDistanceInMM and never finds the limit switch, blink the
@@ -32,5 +32,5 @@ Serial.println("Successfully homed");
   //delay(500);
   // if you want your 0 origin someplace else, you can change it
   //
-  //stepper.setCurrentPositionInMillimeters(0);
+  //stepperHeight.setCurrentPositionInMillimeters(0);
 }
