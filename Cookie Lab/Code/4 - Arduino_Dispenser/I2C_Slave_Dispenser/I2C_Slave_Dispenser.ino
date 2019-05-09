@@ -4,13 +4,15 @@
 #include <Wire.h> // Include the required Wire library for I2C
 #include <Adafruit_MotorShield.h>
 
-#define I2C_SLAVE_ADDRESS 1
+#define I2C_SLAVE_ADDRESS 0x09
 #define STEPS_PER_REV 200
 
 int bay = 0;
 int quantity = 0;
-enum MOTOR_OPERATION {NONE = 2, DISPENSE = 0, MOVE_UP = 1, MOVE_DOWN = -1};
-MOTOR_OPERATION mode = NONE;
+enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
+DispenserControl mode = STOP;
+bool doneDispensing = false;
+
 
 int Steps;
 float Step2;
@@ -44,7 +46,8 @@ void setup() {
   Serial.begin(9600);
   setupMotors();
   Wire.begin(I2C_SLAVE_ADDRESS);
-  Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
+  Wire.onReceive(receiveEvent); // Attach a function to trigger when something is received
+  Wire.onRequest(requestEvent);
 }
 
 void receiveEvent(int howMany) {
@@ -52,7 +55,12 @@ void receiveEvent(int howMany) {
   bay = Wire.read();               // Read first byte from the I2C_Master
   quantity = Wire.read();          // Read second byte from the I2C_Master
   mode = Wire.read();              // Read third byte from the I2C_Master
-  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
+//  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
+}
+
+void requestEvet() {
+  while(!doneDispensing);
+  Wire.write(doneDispensing);
 }
 
 void loop() {
