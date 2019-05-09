@@ -85,10 +85,10 @@ void setup()
   servoWrist.write(6);
 
   //Begin homing procedure
-  setHome();
-
-  //Debug();
-  //setHeight(50);
+  //  setHome();
+  //
+  //  //Debug();
+  //  setHeight(200);
 
 
   //  motion(180, 6, 0, 0); //(finger, wrist, height, rotation)
@@ -111,7 +111,7 @@ void loop()
   //  (actually the state machine should be on the master arduino...
   //  this one should only be receiving movement commmands and interpreting them)
   //
-
+  //
   Serial.println("Microstep steps");
   stepperBase->step(50, FORWARD, MICROSTEP);
   stepperBase->step(50, BACKWARD, MICROSTEP);
