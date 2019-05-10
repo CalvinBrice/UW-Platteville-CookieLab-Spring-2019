@@ -141,9 +141,9 @@ void gripperAction() {
 }
 
 void startupSequence() {
-Serial.println();
-Serial.println("Start up sequence");
-  
+  Serial.println();
+  Serial.println("Start up sequence");
+
   //setHeight(200); // drops arm down
   Serial.println("height: 200");
   delay(2000);
@@ -169,7 +169,7 @@ Serial.println("Start up sequence");
 void cupFromTrain() {
   //  move arm to just before train location
   //  lower arm to correct height
-//  setHeight(200);
+  //  setHeight(200);
   //  slowly swing in
   gripper = CLOSE;
   //  lift vertical to height below mixer blade
@@ -197,9 +197,13 @@ void loop()
   if (Serial.available() > 0) {
     // read incoming serial data:
     char inChar = Serial.read();
-    if (inChar == ' ') {
+    if (inChar == 'a') {
       //Serial.println("received: a");
       startupSequence();
+    }
+    if (inChar == 'b') {
+      //Serial.println("received: b");
+      cupFromTrain();
     }
   }
   gripperAction();
