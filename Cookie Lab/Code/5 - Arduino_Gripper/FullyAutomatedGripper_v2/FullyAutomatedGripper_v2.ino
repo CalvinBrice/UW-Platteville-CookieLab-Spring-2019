@@ -141,7 +141,7 @@ void gripperAction() {
 }
 
 void startupSequence() {
-  Serial.println();
+  Serial.println("");
   Serial.println("Start up sequence");
 
   //setHeight(200); // drops arm down
@@ -163,10 +163,14 @@ void startupSequence() {
   gripper = OPEN;
   Serial.println("gripper: OPEN");
   delay(2000);
+
+  Serial.println("done");
 }
 
 
 void cupFromTrain() {
+  Serial.println("");
+  Serial.println("cupFromTrain");
   //  move arm to just before train location
   //  lower arm to correct height
   //  setHeight(200);
@@ -179,15 +183,19 @@ void cupFromTrain() {
   //  slowly raise into postion
   plate = FRONT;
   gripper = OPEN;
+  Serial.println("done");
 }
 
 void mixIngredients() {
+  Serial.println("");
+  Serial.println("mixIngredients");
   //mixer = ON;
   //  delay for appropriate time
 
   //mixer = OFF;
   //gripper = CLOSE;
   //plate = BACK;
+  Serial.println("done");
 }
 
 
@@ -204,6 +212,10 @@ void loop()
     if (inChar == 'b') {
       //Serial.println("received: b");
       cupFromTrain();
+    }
+    if (inChar == 'c') {
+      //Serial.println("received: c");
+      mixIngredients();
     }
   }
   gripperAction();
