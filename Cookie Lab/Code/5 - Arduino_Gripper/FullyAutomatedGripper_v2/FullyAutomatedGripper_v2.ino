@@ -12,116 +12,196 @@
 // Format of messages to be received is:
 // (int FINGER, int WRIST, int HEIGHT, int, ROTATION)
 
+//Fix delay with millis
+
 #include <SpeedyStepper.h> //Library for linear actuator
 #include <Adafruit_MotorShield.h> //Library for base rotation stepper
 #include <Servo.h>
 #include <Wire.h>
 
+bool debug = true;          // enables serial debugging
+const byte MY_ADDRESS = 3;  // i2c address of board
+
 // pin assignments
-int LED_PIN = 13;
+int PLATE_SERVO1 = 5;
+int PLATE_SERVO2 = 11;
+
 int MOTOR_STEP_PIN = 6;       // --> PUL+
 int MOTOR_DIRECTION_PIN = 4;  // --> DIR+
 int LIMIT_SWITCH_PIN = 8;     // --> Limit switch RED wire
+
 int FINGER_SERVO = 9;
 int WRIST_SERVO = 10;
-//int ROTATION_SERVO = 11;
+int LED_PIN = 13;
 
 Servo servoFinger;  // create servo object to control a servo
 Servo servoWrist;  // create servo object to control a servo
-SpeedyStepper stepperHeight; // create the stepper motor object
+Servo servoPlate1;  // create servo object to control a servo
+Servo servoPlate2;  // create servo object to control a servo
 
-bool debug = true;          // enables serial debugging
-const byte MY_ADDRESS = 3;  // i2c address of board
+SpeedyStepper stepperHeight; // create the stepper motor object
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();  // Create the motor shield object with the I2C address
 Adafruit_StepperMotor *stepperBase = AFMS.getStepper(200, 2); // Connect a stepper motor with 200 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
 
-// Structs
-typedef struct {
-  float pos;
-  float cur;
-  float minimum;
-  float maximum;
-} arm;
+//---------------------------------------------------------------------------
 
-arm finger = {0, 0, 0, 180};    //initializes a finger under the arm type with (pos, cur, minimum, maximum)
-arm wrist = {0, 0, 0, 180};     //wrist is limited by wiring length... do not mess with these values or you risk damage
-arm height = {0, 0, 0, 370};    //maximum travel of linear actuator is 400mm - the height of the limit switch (30mm)
-arm rotation = {0, 0, 0, 180};  //
+enum GRIP {OPEN = 180, CLOSE = 90};
+enum WRIST {UP = 6, DOWN = 107};
+enum PLATE {FRONT = 0, BACK = 180};
+enum MIXER {ON = HIGH, OFF = LOW};
+GRIP gripper = OPEN;  // declares object of gripper and sets initial position
+WRIST wrist = UP;     // declares object of wrist and sets initial position
+PLATE plate = BACK;   // declares object of plate and sets initial position
+MIXER mixer = OFF;    // declares object of mixer and sets initial state
 
 void setup()
 {
-  //Initialize pins
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
-
-  //i2c initialization
-  Wire.begin(MY_ADDRESS);       // join i2c bus with address
-  Wire.onReceive(receiveEvent); // register event
 
   //Start serial (for debugging)
   Serial.begin(9600);
   Serial.println("Gripper Arduino");
+  pinMode(LED_PIN, OUTPUT);
+
+  //i2c initialization
+  Wire.begin(MY_ADDRESS); // join i2c bus with address
+  Wire.onReceive(receiveEvent); // register event
+
 
   //Initialize servos
-  servoFinger.attach(FINGER_SERVO);   // attaches the servo on specified pin to the servo object
-  servoWrist.attach(WRIST_SERVO);    // attaches the servo on specified pin to the servo object
-  //  servo.attach(ROTATION_SERVO); // attaches the servo on specified pin to the servo object
+  servoFinger.attach(FINGER_SERVO, 0 , 180);  // attaches the servo on specified pin to the servo object
+  servoWrist.attach(WRIST_SERVO, 6, 107);
+  servoPlate1.attach(PLATE_SERVO1, 0, 180);
+  servoPlate2.attach(PLATE_SERVO2, 0, 180);
 
   // connect and configure the stepper motor to its IO pins
+  pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
   stepperHeight.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
   stepperHeight.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
-  stepperBase->setSpeed(10);  // 10 rpm
+  stepperBase->setSpeed(80);  // 80 rpm
 
   //----------------------------------------
   // Automation
 
   // set position of arm so it doesn't hit anything first
-  servoFinger.write(180);
-  servoWrist.write(6);
+  //stepperBase->step(100, FORWARD, DOUBLE); //moves arm to home position (it is normal to run it agains the upright post to zero the postion)
 
-  //Begin homing procedure
+  //Begin homing procedure of linear actuator
   //  setHome();
-  //
-  //  //Debug();
-  //  setHeight(200);
 
+  //  setHeight(200); // drops arm down
+  //  delay(2000);
+  //  startupSequence();
 
-  //  motion(180, 6, 0, 0); //(finger, wrist, height, rotation)
-  //  delay(2000);
-  //  servoWrist.write(107);
-  //
-  //  delay(2000);
-  //  servoFinger.write(90);
-  //
-  //  delay(2000);
-  //  servoWrist.write(6);
-  //
-  //  delay(2000);
-  //  servoFinger.write(180);
+  //-------------------------------------
+  Serial.println("done with setup");
+  Serial.println();
 }
+
+void wristAction() {
+  switch (wrist) {
+    case UP:
+      //Serial.println("wrist:  UP");
+      //  servoWrist.write(UP);
+      wrist = NULL;
+      break;
+    case DOWN:
+      //Serial.println("wrist: DOWN");
+      //  servoWrist.write(DOWN);
+      wrist = NULL;
+      break;
+    default:
+      // Do nothing
+      wrist = NULL;
+      break;
+  }
+}
+
+void gripperAction() {
+  switch (gripper) {
+    case OPEN:
+      //Serial.println("gripper:  OPEN");
+      //  servoGripper.write(OPEN);
+      gripper = NULL;
+      break;
+    case CLOSE:
+      //Serial.println("gripper: CLOSE");
+      //  servoGripper.write(CLOSE);
+      gripper = NULL;
+      break;
+    default:
+      // Do nothing
+      gripper = NULL;
+      break;
+  }
+}
+
+void startupSequence() {
+Serial.println();
+Serial.println("Start up sequence");
+  
+  //setHeight(200); // drops arm down
+  Serial.println("height: 200");
+  delay(2000);
+
+  wrist = DOWN;
+  Serial.println("wrist: DOWN");
+  delay(2000);
+
+  gripper = CLOSE;
+  Serial.println("gripper: CLOSE");
+  delay(2000);
+
+  wrist = UP;
+  Serial.println("wrist: UP");
+  delay(2000);
+
+  gripper = OPEN;
+  Serial.println("gripper: OPEN");
+  delay(2000);
+}
+
+
+void cupFromTrain() {
+  //  move arm to just before train location
+  //  lower arm to correct height
+//  setHeight(200);
+  //  slowly swing in
+  gripper = CLOSE;
+  //  lift vertical to height below mixer blade
+
+  plate = BACK;
+  //  swing arm below mixer
+  //  slowly raise into postion
+  plate = FRONT;
+  gripper = OPEN;
+}
+
+void mixIngredients() {
+  //mixer = ON;
+  //  delay for appropriate time
+
+  //mixer = OFF;
+  //gripper = CLOSE;
+  //plate = BACK;
+}
+
+
 
 void loop()
 {
-  //State machine
-  //  (actually the state machine should be on the master arduino...
-  //  this one should only be receiving movement commmands and interpreting them)
-  //
-  //
-  Serial.println("Microstep steps");
-  stepperBase->step(50, FORWARD, MICROSTEP);
-  stepperBase->step(50, BACKWARD, MICROSTEP);
-
-}
-
-void motion(int finger_pos, int wrist_pos, int height_pos, int rotation_pos) {
-  // Finger
-  if ( finger.minimum <= finger.pos && finger.pos <= finger.maximum) {
-    //new finger position is within parameters
-    servoFinger.write(180);
+  if (Serial.available() > 0) {
+    // read incoming serial data:
+    char inChar = Serial.read();
+    if (inChar == ' ') {
+      //Serial.println("received: a");
+      startupSequence();
+    }
   }
+  gripperAction();
+  wristAction();
 }
