@@ -99,7 +99,6 @@ void setup()
 
   //-------------------------------------
   Serial.println("done with setup");
-  Serial.println();
 }
 
 void wristAction() {
@@ -140,29 +139,30 @@ void gripperAction() {
   }
 }
 
+
 void startupSequence() {
   Serial.println("");
   Serial.println("Start up sequence");
 
   //setHeight(200); // drops arm down
   Serial.println("height: 200");
-  delay(2000);
+  delay(1000);
 
   wrist = DOWN;
   Serial.println("wrist: DOWN");
-  delay(2000);
+  delay(1000);
 
   gripper = CLOSE;
   Serial.println("gripper: CLOSE");
-  delay(2000);
+  delay(1000);
 
   wrist = UP;
   Serial.println("wrist: UP");
-  delay(2000);
+  delay(1000);
 
   gripper = OPEN;
   Serial.println("gripper: OPEN");
-  delay(2000);
+  delay(1000);
 
   Serial.println("done");
 }
@@ -175,26 +175,49 @@ void cupFromTrain() {
   //  lower arm to correct height
   //  setHeight(200);
   //  slowly swing in
+
   gripper = CLOSE;
+  Serial.println("gripper: CLOSE");
+  delay(1000);
+
   //  lift vertical to height below mixer blade
 
   plate = BACK;
+  Serial.println("plate: BACK");
+  delay(1000);
+
   //  swing arm below mixer
   //  slowly raise into postion
+
   plate = FRONT;
+  Serial.println("plate: FRONT");
+  delay(1000);
+
   gripper = OPEN;
+  Serial.println("gripper: OPEN");
+  delay(1000);
+
   Serial.println("done");
 }
+
 
 void mixIngredients() {
   Serial.println("");
   Serial.println("mixIngredients");
+
   //mixer = ON;
   //  delay for appropriate time
 
   //mixer = OFF;
-  //gripper = CLOSE;
-  //plate = BACK;
+
+  gripper = CLOSE;
+  Serial.println("gripper: CLOSE");
+  delay(1000);
+
+  plate = BACK;
+  Serial.println("plate: BACK");
+  delay(1000);
+
   Serial.println("done");
 }
 
@@ -205,19 +228,25 @@ void loop()
   if (Serial.available() > 0) {
     // read incoming serial data:
     char inChar = Serial.read();
-    if (inChar == 'a') {
-      //Serial.println("received: a");
-      startupSequence();
-    }
-    if (inChar == 'b') {
-      //Serial.println("received: b");
-      cupFromTrain();
-    }
-    if (inChar == 'c') {
-      //Serial.println("received: c");
-      mixIngredients();
+    switch (inChar) {
+      case '1':
+        Serial.println("received: 1");
+        startupSequence();
+        break;
+      case '2':
+        Serial.println("received: 2");
+        cupFromTrain();
+        break;
+      case '3':
+        Serial.println("received: 3");
+        mixIngredients();
+        break;
+      default:
+        Serial.println("Not a valid command");
+        break;
     }
   }
+
   gripperAction();
   wristAction();
 }
