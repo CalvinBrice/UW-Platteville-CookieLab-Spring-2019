@@ -47,7 +47,7 @@ Adafruit_StepperMotor *stepperBase = AFMS.getStepper(200, 2); // Connect a stepp
 //---------------------------------------------------------------------------
 
 enum GRIP {OPEN = 180, CLOSE = 90};
-enum WRIST {UP = 6, DOWN = 107};
+enum WRIST {UP = 5, DOWN = 158};
 enum PLATE {FRONT = 0, BACK = 180};
 enum MIXER {ON = HIGH, OFF = LOW};
 GRIP gripper = OPEN;  // declares object of gripper and sets initial position
@@ -70,7 +70,7 @@ void setup()
 
   //Initialize servos
   servoFinger.attach(FINGER_SERVO, 0 , 180);  // attaches the servo on specified pin to the servo object
-  servoWrist.attach(WRIST_SERVO, 6, 107);
+  servoWrist.attach(WRIST_SERVO, 0, 180);
   servoPlate1.attach(PLATE_SERVO1, 0, 180);
   servoPlate2.attach(PLATE_SERVO2, 0, 180);
 
@@ -91,10 +91,10 @@ void setup()
   servoFinger.write(OPEN);
   servoWrist.write(UP);
 
-  //stepperBase->step(100, FORWARD, DOUBLE); //moves arm to home position (it is normal to run it agains the upright post to zero the postion)
+  //stepperBase->step(100, FORWARD, SINGLE); //moves arm to home position (it is normal to run it agains the upright post to zero the postion)
 
   //Begin homing procedure of linear actuator
-  //  setHome();
+  //setHome();
 
   //  setHeight(200); // drops arm down
   //  delay(2000);
@@ -104,122 +104,32 @@ void setup()
   Serial.println("done with setup");
 }
 
-void wristAction() {
-  switch (wrist) {
-    case UP:
-      //Serial.println("wrist:  UP");
-      //  servoWrist.write(UP);
-      wrist = NULL;
-      break;
-    case DOWN:
-      //Serial.println("wrist: DOWN");
-      //  servoWrist.write(DOWN);
-      wrist = NULL;
-      break;
-    default:
-      // Do nothing
-      wrist = NULL;
-      break;
-  }
-}
-
-void gripperAction() {
-  switch (gripper) {
-    case OPEN:
-      //Serial.println("gripper:  OPEN");
-      //  servoGripper.write(OPEN);
-      gripper = NULL;
-      break;
-    case CLOSE:
-      //Serial.println("gripper: CLOSE");
-      //  servoGripper.write(CLOSE);
-      gripper = NULL;
-      break;
-    default:
-      // Do nothing
-      gripper = NULL;
-      break;
-  }
-}
-
 
 void startupSequence() {
   Serial.println("");
   Serial.println("Start up sequence");
 
   //setHeight(200); // drops arm down
-  Serial.println("height: 200");
-  delay(1000);
+  //Serial.println("height: 200");
+  //delay(1000);
 
-  wrist = DOWN;
+  //    wrist = DOWN;
+  servoWrist.write(DOWN);
   Serial.println("wrist: DOWN");
-  delay(1000);
+  delay(2000);
+  //
+  //  gripper = CLOSE;
+  //  Serial.println("gripper: CLOSE");
+  //  delay(1000);
 
-  gripper = CLOSE;
-  Serial.println("gripper: CLOSE");
-  delay(1000);
-
-  wrist = UP;
+  //  wrist = UP;
+  servoWrist.write(UP);
   Serial.println("wrist: UP");
-  delay(1000);
-
-  gripper = OPEN;
-  Serial.println("gripper: OPEN");
-  delay(1000);
-
-  Serial.println("done");
-}
-
-
-void cupFromTrain() {
-  Serial.println("");
-  Serial.println("cupFromTrain");
-  //  move arm to just before train location
-  //  lower arm to correct height
-  //  setHeight(200);
-  //  slowly swing in
-
-  gripper = CLOSE;
-  Serial.println("gripper: CLOSE");
-  delay(1000);
-
-  //  lift vertical to height below mixer blade
-
-  plate = BACK;
-  Serial.println("plate: BACK");
-  delay(1000);
-
-  //  swing arm below mixer
-  //  slowly raise into postion
-
-  plate = FRONT;
-  Serial.println("plate: FRONT");
-  delay(1000);
-
-  gripper = OPEN;
-  Serial.println("gripper: OPEN");
-  delay(1000);
-
-  Serial.println("done");
-}
-
-
-void mixIngredients() {
-  Serial.println("");
-  Serial.println("mixIngredients");
-
-  //mixer = ON;
-  //  delay for appropriate time
-
-  //mixer = OFF;
-
-  gripper = CLOSE;
-  Serial.println("gripper: CLOSE");
-  delay(1000);
-
-  plate = BACK;
-  Serial.println("plate: BACK");
-  delay(1000);
+  //  delay(1000);
+  //
+  //  gripper = OPEN;
+  //  Serial.println("gripper: OPEN");
+  //  delay(1000);
 
   Serial.println("done");
 }
@@ -233,23 +143,33 @@ void loop()
     char inChar = Serial.read();
     switch (inChar) {
       case '1':
-        Serial.println("received: 1");
-        startupSequence();
+        Serial.println("received: 1 = home");
+        setHome();
+
         break;
       case '2':
         Serial.println("received: 2");
-        cupFromTrain();
+        startupSequence();
         break;
       case '3':
         Serial.println("received: 3");
-        mixIngredients();
+        setHeight(200); // drops arm down
+        break;
+      case '4':
+        Serial.println("received: 3");
+        setHeight(150); // drops arm down
+        break;
+      case 'a':
+        Serial.println("received: CCW");
+        stepperBase->step(100, FORWARD, SINGLE); //Rotates CCW
+        break;
+      case 'd':
+        Serial.println("received: CW");
+        stepperBase->step(100, BACKWARD, SINGLE); //Rotates CCW
         break;
       default:
         Serial.println("Not a valid command");
         break;
     }
   }
-
-  //  gripperAction();
-  //  wristAction();
 }
