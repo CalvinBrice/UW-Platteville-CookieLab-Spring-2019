@@ -9,8 +9,6 @@
 
 // This should be automated so that a sequence of positional values may be transmitted via
 // i2c and translated into movements of the gripper, wrist, linear actuator, and base rotation
-// Format of messages to be received is:
-// (int FINGER, int WRIST, int HEIGHT, int, ROTATION)
 
 //Fix delay with millis
 
@@ -50,7 +48,7 @@ Adafruit_StepperMotor *stepperBase = AFMS.getStepper(200, 2); // Connect a stepp
 //---------------------------------------------------------------------------
 
 enum GRIP {OPEN = 180, CLOSE = 25};
-enum WRIST {UP = 158, DOWN = 5};
+enum WRIST {UP = 5, DOWN = 158};
 enum PLATE {FRONT = 0, BACK = 180};
 enum MIXER {ON = HIGH, OFF = LOW};
 GRIP gripper = OPEN;  // declares object of gripper and sets initial position
@@ -223,7 +221,7 @@ void loop()
       case '4':
         Serial.println("received: 4");  //Mixer height
         setHeight(28); // drops arm down
-        heightCurrent = 28;
+        heightCurrent = 30;
         break;
 
       case '5':
