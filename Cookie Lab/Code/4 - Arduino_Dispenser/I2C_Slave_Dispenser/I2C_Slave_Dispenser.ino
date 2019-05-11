@@ -4,8 +4,9 @@
 #include <Wire.h> // Include the required Wire library for I2C
 #include <Adafruit_MotorShield.h>
 
-#define I2C_ADDRESS 0x08 // Address for the dispenser
 #define STEPS_PER_REV 200
+
+enum Slaves {DISPENSER = 0X08, CART = 0x09, ARM = 0X10};
 
 int bay = 0;
 int quantity = 0;
@@ -45,7 +46,7 @@ Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour a
 void setup() {
   Serial.begin(9600);
   setupMotors();
-  Wire.begin(I2C_ADDRESS);
+  Wire.begin(DISPENSER);
   Wire.onReceive(receiveEvent); // Attach a function to trigger when something is received
   Wire.onRequest(requestEvent);
 }

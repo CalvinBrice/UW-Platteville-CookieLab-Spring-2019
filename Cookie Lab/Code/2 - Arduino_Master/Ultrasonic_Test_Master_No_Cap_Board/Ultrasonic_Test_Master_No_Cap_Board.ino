@@ -1,6 +1,6 @@
 #include <Wire.h>
 
-boolean straight_track;
+enum TrackDirection {CURVED, STRAIGHT}; // Basically boolean with curved as false (0) and straight as true (1)
 
 struct Ingredients {
   int location;
@@ -9,18 +9,18 @@ struct Ingredients {
 };
 
 Ingredients ingredient[] = { // Sets default parameters for each ingredient
-  // location, straight track?, quantity
-  {151,  straight_track, 1}, // Butter
-  {406,  straight_track, 1}, // Sugar
-  {559,  straight_track, 1}, // Molasses
-  {744,  straight_track, 1}, // Vanilla
-  {931,  straight_track, 1}, // Egg
-  {66,  !straight_track, 1}, // Add in 2
-  {237, !straight_track, 1}, // Chocolate Chips
-  {387, !straight_track, 1}, // Salt
-  {690, !straight_track, 1}, // Baking Soda
-  {801, !straight_track, 1}, // Flour
-  {955, !straight_track, 1}, // Oatmeal
+  // location, trackDirection, quantity
+  {151, STRAIGHT, 1}, // Butter
+  {406, STRAIGHT, 1}, // Sugar
+  {559, STRAIGHT, 1}, // Molasses
+  {744, STRAIGHT, 1}, // Vanilla
+  {931, STRAIGHT, 1}, // Egg
+  {66,  CURVED,   1}, // Add in 2
+  {237, CURVED,   1}, // Chocolate Chips
+  {387, CURVED,   1}, // Salt
+  {690, CURVED,   1}, // Baking Soda
+  {801, CURVED,   1}, // Flour
+  {955, CURVED,   1}, // Oatmeal
 };
 
 // Ultrasonic sensor on straight track
@@ -47,7 +47,7 @@ boolean straight = isSwitchOnRight;
 int cartDirectionPin = 2; // Pin that controls the speed and direction of train
 int trackPWM = 3; // Pin that powers the track when set HIGH
 
-enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, CAP_CONTROL, DISPENSER_CONTROL};
+enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, CAP_CONTROL, SWITCH_CONTROL, DISPENSER_CONTROL};
 enum CartControl {CART_HOLD, CART_GO_LEFT, CART_GO_RIGHT, TRACK_SWITCH_LEFT, TRACK_SWITCH_RIGHT};
 enum Sensors {NO_SENSOR, U1, U2, CAP};
 enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
@@ -72,18 +72,24 @@ void loop() {
     Serial.println(ingredient[i].location);
     destinationArray[0] = (ingredient[i].location >> 8) & 0xFF; // maximum int unsigned value is 256
     destinationArray[1] = ingredient[i].location & 0xFF; // Converts ingredient[i].location to a 2 byte variable array (max value is now 65,536)
-    if(ingredient[i].trackDirection) while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U1)); // Wait until cart is in position
-      if(i!=0)
-        if(ingredient[i-1].trackDirection != ingredient[i].trackDirection) {
-          //send cart backward
-          while(!readCapSensor())
+    if (i != 0) {
+      if (ingredient[i - 1].trackDirection != ingredient[i].trackDirection) {
+        //send cart backward
+        while (!readCapSensor())
           //switch track direction
-          //send cart moving?
+          // send cart moving ?
+          switchTrack(slave, ingredient[i].trackDirection);
+        if (ingredient[i].trackDirection) {
+
+          while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U1)); // Wait until cart is in position
         }
-    else if(!ingredient[i].trackDirection) while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U2)); // Wait until cart is in position
+
+      }
+    }
+    else if (!ingredient[i].trackDirection) while (!readUSensor(train, ULTRASONIC_CONTROL, destinationArray, U2)); // Wait until cart is in position
     else Serial.println("Error in variable: trackDirection");
     Serial.println("The cart made it to the destination");
-//    while (!dispenseIngredients(train, i, ingredient[i].quantity, DISPENSE)); // Wait until done dispensing
-//    Serial.println("Finished dispensing the proper ingredient");
+    //    while (!dispenseIngredients(train, i, ingredient[i].quantity, DISPENSE)); // Wait until done dispensing
+    //    Serial.println("Finished dispensing the proper ingredient");
   }
 }
