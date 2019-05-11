@@ -9,13 +9,13 @@
 
 // This should be automated so that a sequence of positional values may be transmitted via
 // i2c and translated into movements of the gripper, wrist, linear actuator, and base rotation
-// Format of messages to be received is:
-// (int FINGER, int WRIST, int HEIGHT, int, ROTATION)
 
 #include <SpeedyStepper.h> //Library for linear actuator
 #include <Adafruit_MotorShield.h> //Library for base rotation stepper
 #include <Servo.h>
 #include <Wire.h>
+
+#define I2C_ADDRESS 0x10 //(update)
 
 // pin assignments
 int LED_PIN = 13;
@@ -24,17 +24,13 @@ int MOTOR_DIRECTION_PIN = 4;  // --> DIR+
 int LIMIT_SWITCH_PIN = 8;     // --> Limit switch RED wire
 int FINGER_SERVO = 9;
 int WRIST_SERVO = 10;
-//int ROTATION_SERVO = 11;
 
+// setup physical objects
 Servo servoFinger;  // create servo object to control a servo
 Servo servoWrist;  // create servo object to control a servo
 SpeedyStepper stepperHeight; // create the stepper motor object
-
-bool debug = true;          // enables serial debugging
-const byte MY_ADDRESS = 3;  // i2c address of board
-
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();  // Create the motor shield object with the I2C address
-Adafruit_StepperMotor *stepperBase = AFMS.getStepper(200, 2); // Connect a stepper motor with 200 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
+Adafruit_StepperMotor *stepperBase = AFMS.getStepper(400, 2); // Connect a stepper motor with 200 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
 
 // Structs
 typedef struct {
@@ -44,45 +40,49 @@ typedef struct {
   float maximum;
 } arm;
 
+//arm "name" = {pos, cur, minimum, maximum};
 arm finger = {0, 0, 0, 180};    //initializes a finger under the arm type with (pos, cur, minimum, maximum)
-arm wrist = {0, 0, 0, 180};     //wrist is limited by wiring length... do not mess with these values or you risk damage
+arm wrist = {0, 0, 6, 107};     //wrist is limited by wiring length... do not mess with these values or you risk damage
 arm height = {0, 0, 0, 370};    //maximum travel of linear actuator is 400mm - the height of the limit switch (30mm)
-arm rotation = {0, 0, 0, 180};  //
+arm rotation = {0, 0, 0, 180};  //needs to be updated
+
+enum Finger {OPEN, CLOSE};
+enum Wrist {UP, DOWN};
+Finger finger = OPEN;
+Wrist wrist = UP;
 
 void setup()
 {
-  //Initialize pins
+  Serial.begin(9600);
+  Serial.println("Robotic Arm Arduino");
+
+  Wire.begin(I2C_ADDRESS);  // Start the I2C Bus as Slave on addressSPI
+  Wire.onReceive(receiveEvent);  // Attach a function to trigger when something is received
+  Wire.onRequest(receiveRequest); // Attach a function to trigger when the master requests something from this slave
+
   pinMode(LED_PIN, OUTPUT);
   pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
-
-  //i2c initialization
-  Wire.begin(MY_ADDRESS);       // join i2c bus with address
-  Wire.onReceive(receiveEvent); // register event
-
-  //Start serial (for debugging)
-  Serial.begin(9600);
-  Serial.println("Gripper Arduino");
 
   //Initialize servos
   servoFinger.attach(FINGER_SERVO);   // attaches the servo on specified pin to the servo object
   servoWrist.attach(WRIST_SERVO);    // attaches the servo on specified pin to the servo object
-  //  servo.attach(ROTATION_SERVO); // attaches the servo on specified pin to the servo object
 
-  // connect and configure the stepper motor to its IO pins
+  // connect and configure the stepper motor to its IO pins with external driver
   stepperHeight.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
   stepperHeight.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
+  // connect and configure the stepper motor to its IO pins with Adafruit shield
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
-  stepperBase->setSpeed(10);  // 10 rpm
+  stepperBase->setSpeed(80);  // 10 rpm
 
   //----------------------------------------
   // Automation
 
   // set position of arm so it doesn't hit anything first
-  servoFinger.write(180);
-  servoWrist.write(6);
+  servoFinger.write(180); //open fingers
+  servoWrist.write(6);    //default horizontal
 
   //Begin homing procedure
   //  setHome();
@@ -118,10 +118,24 @@ void loop()
 
 }
 
-void motion(int finger_pos, int wrist_pos, int height_pos, int rotation_pos) {
-  // Finger
-  if ( finger.minimum <= finger.pos && finger.pos <= finger.maximum) {
-    //new finger position is within parameters
-    servoFinger.write(180);
+void receiveEvent(String Commands) {
+  switch (Commands) {
+    case FINGERS_OPEN:
+
+      break;
+    case FINGERS_CLOSE:
+      //      goingToOrigin();
+      break;
+    case WRIST_UP:
+      Serial.println("Wrist uo");
+      servoWrist.write(wrist.minimum);
+      break;
+    case WRIST_DOWN:
+      Serial.println("Wrist down");
+      servoWrist.write(wrist.maximum);
+      break;
+    default:
+      Serial.println("Error selecting command"); // command is not equal to Commands enum
+      break;
   }
 }
