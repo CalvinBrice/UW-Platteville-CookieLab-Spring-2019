@@ -11,8 +11,7 @@ enum Slaves {DISPENSER = 0X08, CART = 0x09, ARM = 0X10};
 int bay = 0;
 int quantity = 0;
 enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
-DispenserControl mode = STOP;
-bool doneDispensing = false;
+DispenserControl mode = DISPENSE;
 
 
 int Steps;
@@ -55,51 +54,48 @@ void receiveEvent(int howMany) {
   while (!Wire.available());       // Wait for a byte to show up on the wire
   bay = Wire.read();               // Read first byte from the I2C_Master
   quantity = Wire.read();          // Read second byte from the I2C_Master
-  mode = Wire.read();              // Read third byte from the I2C_Master
-  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity) + " | " + "Mode: " + String(mode));
+  Serial.println("Bay: " + String(bay) + " | " + "Quantity: " + String(quantity));
 }
 
 void requestEvent() {
-  while(!doneDispensing);
-  Wire.write(doneDispensing);
-}
-
-void loop() {
   switch (bay) {
-    case 1:
+    case 0:
       butter();
       break;
-    case 2:
+    case 1:
       sugar();
       break;
-    case 3:
+    case 2:
       molasses();
       break;
-    case 4:
+    case 3:
       vanilla();
       break;
-    case 5:
+    case 4:
       egg();
       break;
-    case 6:
+    case 5:
       mms();
       break;
-    case 7:
+    case 6:
       chocolateChips();
       break;
-    case 8:
+    case 7:
       salt();
       break;
-    case 9:
+    case 8:
       bakingSoda();
       break;
-    case 10:
+    case 9:
       flour();
       break;
-    case 11:
+    case 10:
       oats();
       break;
     default:
       break;
   }
+  Wire.write(true);
 }
+
+void loop() {}
