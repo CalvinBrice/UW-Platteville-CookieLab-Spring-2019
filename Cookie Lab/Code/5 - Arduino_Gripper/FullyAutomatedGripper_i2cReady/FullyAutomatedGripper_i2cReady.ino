@@ -1,60 +1,87 @@
-//-----------------------------------------
+//----------------------------------------------------------------------------------
 //  Name: Fully Automated Gripper Code
 //
 //  Repository: https://github.com/CalvinBrice/UW-Platteville-CookieLab-Spring-2019-
 //
 //  Author(s): Calvin Brice, Austen Owens
 //  Date: 5/7/2019
-//-----------------------------------------
+//
+//  Notes:
+//  This should be automated so that a sequence of positional values may be transmitted via
+//  i2c and translated into movements of the gripper, wrist, linear actuator, and base rotation
+//
+//  *Fix delay with millis
+//----------------------------------------------------------------------------------
 
-// This should be automated so that a sequence of positional values may be transmitted via
-// i2c and translated into movements of the gripper, wrist, linear actuator, and base rotation
-
-//Fix delay with millis
-
+// --- Import correct libraries ---
 #include <SpeedyStepper.h> //Library for linear actuator
 #include <Adafruit_MotorShield.h> //Library for base rotation stepper
 #include <Servo.h>
 #include <Wire.h>
 
-bool debug = true;          // enables serial debugging
+bool debug = true;             // enables serial debugging
 const byte MY_ADDRESS = 0x10;  // i2c address of board
 
-int heightCurrent;
-int rotationCurrent;
+float maxHomingDistanceInMM = 400;   // since the lead-screw is 500mm long with 400mm of travel, should never move more than that
+float rotationMax = 10000;
+int stepSize = 50; // used to increment base rotation
+int heightCurrent;        //position tracking
+int rotationCurrent;      //rotation tracking
 
-// pin assignments
-int PLATE_SERVO1 = 5;
-int PLATE_SERVO2 = 11;
 
-int MOTOR_STEP_PIN = 6;       // --> PUL+
-int MOTOR_DIRECTION_PIN = 4;  // --> DIR+
-int LIMIT_SWITCH_PIN = 8;     // --> Limit switch RED wire
 
-int FINGER_SERVO = 9;
-int WRIST_SERVO = 10;
+// --- pin assignments ---
+int PLATE_SERVO1 = 5;         // --> Yellow tape
+int PLATE_SERVO2 = 3;        // --> Orange tape
+
+int MOTOR_STEP_PIN = 6;       // --> PUL+ (White wire from motor)
+int MOTOR_DIRECTION_PIN = 4;  // --> DIR+ (Black wire from motor)
+int LIMIT_SWITCH_PIN = 8;     // --> Limit switch RED wire (Black goes to a ground)
+
+int MIXER_PIN = A0;
+
+int LINEAR_ACTUATOR_UP = A1;  // -->  Yellow
+int LINEAR_ACTUATOR_DOWN = A2;// -->  Blue
+
+int FINGER_SERVO = 9;         // --> Teal wire
+int WRIST_SERVO = 10;         // --> Blue wire
 int LED_PIN = 13;
 
+
+
+// --- initializing servos and motor objects ---
 Servo servoFinger;  // create servo object to control a servo
-Servo servoWrist;  // create servo object to control a servo
-Servo servoPlate1;  // create servo object to control a servo
-Servo servoPlate2;  // create servo object to control a servo
+Servo servoWrist;
+Servo servoPlate1;
+Servo servoPlate2;
 
-SpeedyStepper stepperHeight; // create the stepper motor object
+// Uses <Adafruit_MotorShield.h> library
+SpeedyStepper stepperHeight; // create the stepper motor object for the linear actuator (NEMA 23 motor)
 
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();  // Create the motor shield object with the I2C address
-Adafruit_StepperMotor *stepperBase = AFMS.getStepper(200, 2); // Connect a stepper motor with 200 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
+// Uses <SpeedyStepper.h> library
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();  // 0x66 Create the motor shield object with the I2C address (verify it isn't used by other shields for dispenser)
+Adafruit_StepperMotor *stepperBase = AFMS.getStepper(400, 2); // Connect a stepper motor with 400 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
 
-//---------------------------------------------------------------------------
 
+
+// --- servo input parameters... ---
 enum GRIP {OPEN = 180, CLOSE = 25};
 enum WRIST {UP = 5, DOWN = 158};
-enum PLATE {FRONT = 0, BACK = 180};
-enum MIXER {ON = HIGH, OFF = LOW};
+enum MIXER {MIX_ON = HIGH, MIX_OFF = LOW};
 GRIP gripper = OPEN;  // declares object of gripper and sets initial position
 WRIST wrist = UP;     // declares object of wrist and sets initial position
-PLATE plate = BACK;   // declares object of plate and sets initial position
-MIXER mixer = OFF;    // declares object of mixer and sets initial state
+MIXER mixer = MIX_OFF;    // declares object of mixer and sets initial state
+
+
+// --- replaces delay() because that causes issues ---
+
+// Generally, you should use "unsigned long" for variables that hold time
+// The value will quickly become too large for an int to store
+unsigned long previousMillis = 0;        // will store last time LED was updated
+
+// constants won't change:
+const long interval = 1000;           // interval at which to blink (milliseconds)
+//----------------------------------------------------------------------------------
 
 void setup()
 {
@@ -68,6 +95,12 @@ void setup()
   Wire.begin(MY_ADDRESS); // join i2c bus with address
   Wire.onReceive(receiveEvent); // register event
 
+  //Set relay pin for mixer
+  pinMode(MIXER_PIN, OUTPUT);
+
+  //Set relay pin for linear actuator
+  pinMode(LINEAR_ACTUATOR_UP, OUTPUT);
+  pinMode(LINEAR_ACTUATOR_DOWN, OUTPUT);
 
   //Initialize servos
   servoFinger.attach(FINGER_SERVO, 0 , 180);  // attaches the servo on specified pin to the servo object
@@ -80,80 +113,44 @@ void setup()
   stepperHeight.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
   stepperHeight.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
+  //Start motor shield and object for adafruit
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
-
   stepperBase->setSpeed(80);  // 80 rpm
-
-  //----------------------------------------
-  // Automation
 
   // set position of arm so it doesn't hit anything first
   servoFinger.write(OPEN);
   servoWrist.write(UP);
+  setLinearActuator(1); //Up
+  setPlate(0);          //Back
 
-  //stepperBase->step(100, FORWARD, SINGLE); //moves arm to home position (it is normal to run it agains the upright post to zero the postion)
 
-  //Begin homing procedure of linear actuator
-  //setHome();
-
-  //  setHeight(200); // drops arm down
-  //  delay(2000);
-  //  startupSequence();
 
   //-------------------------------------
   Serial.println("done with setup");
 }
 
 
-void startupSequence() {
-  Serial.println("");
-  Serial.println("Start up sequence");
-
-  //setHeight(200); // drops arm down
-  //Serial.println("height: 200");
-  //delay(1000);
-
-  //    wrist = DOWN;
-  servoWrist.write(DOWN);
-  Serial.println("wrist: DOWN");
-  delay(2000);
-  //
-  //  gripper = CLOSE;
-  //  Serial.println("gripper: CLOSE");
-  //  delay(1000);
-
-  //  wrist = UP;
-  servoWrist.write(UP);
-  Serial.println("wrist: UP");
-  //  delay(1000);
-  //
-  //  gripper = OPEN;
-  //  Serial.println("gripper: OPEN");
-  //  delay(1000);
-
-  Serial.println("done");
-}
-
-
 
 void loop()
 {
+  //do not remove... this replaces delay() function
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+  }
+
   if (Serial.available() > 0) {
     // read incoming serial data:
     char inChar = Serial.read();
     switch (inChar) {
       //----Commands----
       case 'a':
-        Serial.println("received: CCW");
-        stepperBase->step(100, FORWARD, DOUBLE); //Rotates CCW
-        stepperBase->release(); //remove all power from the motor
+        setRotation(rotationCurrent + stepSize);
         break;
 
       case 'd':
-        Serial.println("received: CW");
-        stepperBase->step(100, BACKWARD, DOUBLE); //Rotates CCW
-        stepperBase->release(); //remove all power from the motor
+        setRotation(rotationCurrent - stepSize);
         break;
 
       case 'c':
@@ -168,16 +165,16 @@ void loop()
 
       case 's':
         Serial.println("received: Down");
-        stepperHeight.moveRelativeInMillimeters(5.0);
         heightCurrent = heightCurrent + 5;
+        setHeight(heightCurrent);
         Serial.print("moving to height: ");
         Serial.println(heightCurrent);
         break;
 
       case 'w':
         Serial.println("received: Up");
-        stepperHeight.moveRelativeInMillimeters(-5.0);
         heightCurrent = heightCurrent - 5;
+        setHeight(heightCurrent);
         Serial.print("moving to height: ");
         Serial.println(heightCurrent);
         break;
@@ -193,41 +190,67 @@ void loop()
         break;
 
       case 'h':
-        Serial.println("received: home base");
-        //set height
-        //max rotation
-        //set zero
+        homeRotation();
         break;
+
+      case 'j':
+        Serial.println("received: Mixer on");
+        digitalWrite(MIXER_PIN, MIX_ON);
+        break;
+
+      case 'k':
+        Serial.println("received: Mixer off");
+        digitalWrite(MIXER_PIN, MIX_OFF);
+        break;
+
+      case 'f':
+        setPlate(1);  //Forward
+        break;
+
+      case 'b':
+        setPlate(0); //Back
+        break;
+
+      case 'x':
+        setLinearActuator(1); //UP
+        break;
+
+
+      case 'z':
+        setLinearActuator(0); //DOWN
+        break;
+
 
       //----Automated Heights----
 
       case '1':
-        Serial.println("received: 1 = home");
+        Serial.println("received: 1");
         setHome();
+        heightCurrent = 0;
         break;
 
       case '2':
         Serial.println("received: 2"); //Train
+        //heightCurrent = 275;
         setHeight(275); // drops arm down
-        heightCurrent = 275;
         break;
 
       case '3':
         Serial.println("received: 3"); //Swing over train
+        //heightCurrent = 160;
         setHeight(160); // drops arm down
-        heightCurrent = 160;
         break;
 
       case '4':
         Serial.println("received: 4");  //Mixer height
-        setHeight(28); // drops arm down
-        heightCurrent = 30;
+        //heightCurrent = 30;
+        setHeight(30); // drops arm down
         break;
 
       case '5':
         Serial.println("received: 5"); //Pusher
+        //heightCurrent = 220;
         setHeight(220); // drops arm down
-        heightCurrent = 220;
         break;
 
       default:
