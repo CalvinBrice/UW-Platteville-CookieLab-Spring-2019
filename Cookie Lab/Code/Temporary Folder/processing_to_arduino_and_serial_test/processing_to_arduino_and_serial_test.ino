@@ -4,21 +4,26 @@ int leng = 0;
 
 void setup() {
   Serial.begin(9600);
-  Wire.begin(8);
-  Wire.onReceive(receiveEvent);
+//  Wire.begin(8);
+//  Wire.onReceive(receiveEvent);
 }
+//
+//void receiveEvent(int howMany) {
+//  while (!Wire.available());
+//  leng = Wire.read();
+//  Serial.println(leng);
+//  for (int i = 0; i < leng; i++) {
+//    Serial.print(String(i+1)+": ");
+//    Serial.println(Wire.read());
+//  }
+//}
 
-void receiveEvent(int howMany) {
-  while (!Wire.available());
-  leng = Wire.read();
+void loop() {
+  while (!Serial.available());
+  int leng = Serial.read();
   Serial.println(leng);
-  for (int i = 0; i < leng; i++) {
-    Serial.print(String(i+1)+": ");
-    Serial.println(Wire.read());
+  for (int i = 0; i< leng; i++) Serial.println(Serial.read());
   }
-}
-
-void loop() {}
 
 void types(String a) {
   Serial.println("it's a String");

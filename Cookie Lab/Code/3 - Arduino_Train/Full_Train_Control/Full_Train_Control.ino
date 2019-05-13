@@ -47,7 +47,7 @@ void setup() {
   pinMode(UPower2, OUTPUT);
   digitalWrite(UPower1, LOW);
   digitalWrite(UPower2, LOW);
-  digitalWrite(switchPin, LOW); // Set straight track
+  digitalWrite(switchPin, LOW); // Set track to straight
   digitalWrite(cartDirectionPin, LOW); // Set direction to right
 
   // Find the cart and set it to the inductive sensor
@@ -95,6 +95,7 @@ void requestEvent() {
     default:
       Serial.print("Invalid sensor: ");
       Serial.println(sensor);
+      cartCommand = CART_NONE;
       break;
   }
 }
@@ -102,25 +103,20 @@ void requestEvent() {
 void loop() {
   switch (cartCommand) {
     case CART_NONE:
-      //            Serial.println("Stopping cart");
       analogWrite(trackPWM, CART_STOP);
       break;
     case CART_GO_TO_ULTRASONIC:
-      //            Serial.println("Cart going towards ultrasonic sensor");
       digitalWrite(cartDirectionPin, HIGH);
       analogWrite(trackPWM, CART_GO);
       break;
     case CART_GO_TO_INDUCTOR:
-      //            Serial.println("Cart going towards inductive sensor");
       digitalWrite(cartDirectionPin, LOW);
       analogWrite(trackPWM, CART_GO);
       break;
     case TRACK_SWITCH_CURVED:
-      //            Serial.println("Switching track to curved side");
       digitalWrite(switchPin, HIGH);
       break;
     case TRACK_SWITCH_STRAIGHT:
-      //            Serial.println("Switching track to straight side");
       digitalWrite(switchPin, LOW);
       break;
     default:

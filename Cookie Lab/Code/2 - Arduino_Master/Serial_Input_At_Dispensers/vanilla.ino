@@ -1,10 +1,10 @@
-void vanilla() {
+void vanilla(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 20;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running vanilla dispenser");
+//      Serial.println("Running vanilla dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor2->step(Steps, FORWARD, INTERLEAVE);
       myMotor2->release(); //end function be removing power from the motor

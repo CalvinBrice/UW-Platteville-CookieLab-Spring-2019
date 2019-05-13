@@ -1,10 +1,10 @@
-void molasses() {
+void molasses(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 20;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running molasses dispenser");
+//      Serial.println("Running molasses dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor3->step(Steps, FORWARD, INTERLEAVE);
       myMotor3->release(); //end function be removing power from the motor

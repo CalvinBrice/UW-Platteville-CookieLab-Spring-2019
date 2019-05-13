@@ -58,43 +58,7 @@ void receiveEvent(int howMany) {
 }
 
 void requestEvent() {
-  switch (bay) {
-    case 0:
-      butter();
-      break;
-    case 1:
-      sugar();
-      break;
-    case 2:
-      molasses();
-      break;
-    case 3:
-      vanilla();
-      break;
-    case 4:
-      egg();
-      break;
-    case 5:
-      mms();
-      break;
-    case 6:
-      chocolateChips();
-      break;
-    case 7:
-      salt();
-      break;
-    case 8:
-      bakingSoda();
-      break;
-    case 9:
-      flour();
-      break;
-    case 10:
-      oats();
-      break;
-    default:
-      break;
-  }
+  while(!dispense());
   Wire.write(true);
 }
 

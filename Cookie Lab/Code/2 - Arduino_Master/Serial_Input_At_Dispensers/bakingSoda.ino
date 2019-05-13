@@ -1,10 +1,10 @@
-void bakingSoda() {
+void bakingSoda(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 40;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running baking soda dispenser");
+//      Serial.println("Running baking soda dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor6->step(Steps, FORWARD, INTERLEAVE);
       delay(250);

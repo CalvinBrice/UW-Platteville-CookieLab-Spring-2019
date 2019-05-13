@@ -1,10 +1,10 @@
-void oats() {
+void oats(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 140;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running oatmeal dispenser");
+//      Serial.println("Running oatmeal dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor8->step(Steps, BACKWARD, INTERLEAVE);
       myMotor8->release(); //end function be removing power from the motor

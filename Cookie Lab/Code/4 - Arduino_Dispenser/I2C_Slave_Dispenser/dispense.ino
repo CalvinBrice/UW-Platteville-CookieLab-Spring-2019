@@ -1,48 +1,48 @@
-bool doneDispensing(int bay, int quantity) {
+bool dispense() {
   mode = DISPENSE;
   switch (bay) {
     case 0:
-      butter(quantity, mode);
+      butter();
       return true;
       break;
     case 1:
-      sugar(quantity, mode);
+      sugar();
       return true;
       break;
     case 2:
-      molasses(quantity, mode);
+      molasses();
       return true;
       break;
     case 3:
-      vanilla(quantity, mode);
+      vanilla();
       return true;
       break;
     case 4:
-      egg(quantity, mode);
+      egg();
       return true;
       break;
     case 5:
-      mms(quantity, mode);
+      mms();
       return true;
       break;
     case 6:
-      chocolateChips(quantity, mode);
+      chocolateChips();
       return true;
       break;
     case 7:
-      salt(quantity, mode);
+      salt();
       return true;
       break;
     case 8:
-      bakingSoda(quantity, mode);
+      bakingSoda();
       return true;
       break;
     case 9:
-      flour(quantity, mode);
+      flour();
       return true;
       break;
     case 10:
-      oats(quantity, mode);
+      oats();
       return true;
       break;
     default:

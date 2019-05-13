@@ -1,10 +1,10 @@
-void chocolateChips() {
+void chocolateChips(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 140;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running chocolate chips dispenser");
+//      Serial.println("Running chocolate chips dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor7->step(Steps, BACKWARD, INTERLEAVE);
       myMotor7->release(); //end function be removing power from the motor

@@ -1,10 +1,10 @@
-void egg() {
+void egg(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 20;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running egg dispenser");
+//      Serial.println("Running egg dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor4->step(Steps, FORWARD, INTERLEAVE);
       myMotor4->release(); //end function be removing power from the motor

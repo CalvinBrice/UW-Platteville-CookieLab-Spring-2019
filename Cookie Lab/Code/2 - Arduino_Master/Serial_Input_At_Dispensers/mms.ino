@@ -1,10 +1,10 @@
-void mms() {
+void mms(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 140;
+      Steps = quantity * 10;
 //      Serial.println("Number of steps = "+String(Steps));
-      Serial.println("Running MMs dispenser");
+//      Serial.println("Running MMs dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor11->step(Steps, FORWARD, INTERLEAVE);
       myMotor11->release(); //end function by removing power from the motor
