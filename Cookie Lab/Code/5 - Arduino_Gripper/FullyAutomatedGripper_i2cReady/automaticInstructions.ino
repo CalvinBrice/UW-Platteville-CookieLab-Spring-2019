@@ -40,13 +40,21 @@ void automaticInstructions() {
   servoWrist.write(DOWN);
   setHeight(253);
 
-  setRotation(-100);
+  setRotation(110);
 
   setLinearActuator(0); //DOWN
   delay(5000);
   setLinearActuator(1); //UP
   delay(5000);
 
-  setRotation(200);
-  
+  setRotation(600);
+  setHeight(160);
+
+  servoWrist.write(UP);
+
+  setRotation(1120);
+  setHeight(290);
+  servoFinger.write(OPEN);
+  setHeight(100);
+
 }
