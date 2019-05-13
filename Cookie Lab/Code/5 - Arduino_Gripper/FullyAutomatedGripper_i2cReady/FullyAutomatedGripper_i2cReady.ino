@@ -128,18 +128,13 @@ void setup()
 
   //-------------------------------------
   Serial.println("done with setup");
+  
 }
 
 
 
 void loop()
 {
-  //do not remove... this replaces delay() function
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-  }
-
   if (Serial.available() > 0) {
     // read incoming serial data:
     char inChar = Serial.read();
@@ -220,6 +215,10 @@ void loop()
         setLinearActuator(0); //DOWN
         break;
 
+      case '0':
+        automaticInstructions(); //automatic procedure
+        break;
+
 
       //----Automated Heights----
 
@@ -249,8 +248,7 @@ void loop()
 
       case '5':
         Serial.println("received: 5"); //Pusher
-        //heightCurrent = 220;
-        setHeight(220); // drops arm down
+        setHeight(255); // drops arm down
         break;
 
       default:
