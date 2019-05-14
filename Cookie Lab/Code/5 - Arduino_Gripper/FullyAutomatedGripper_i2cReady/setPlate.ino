@@ -3,7 +3,7 @@
 void setPlate(boolean value) //Code to move to position in mm from home, with inputs
 {
   int rotMin = 30;
-  int rotTravel = 140;
+  int rotTravel = 180;
   
   int rot = 180 - rotTravel;
 
