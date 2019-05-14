@@ -66,7 +66,7 @@ Adafruit_StepperMotor *stepperBase = AFMS.getStepper(400, 2); // Connect a stepp
 
 // --- servo input parameters... ---
 enum GRIP {OPEN = 180, CLOSE = 25};
-enum WRIST {UP = 5, DOWN = 158};
+enum WRIST {UP = 12, DOWN = 165};
 enum MIXER {MIX_ON = HIGH, MIX_OFF = LOW};
 GRIP gripper = OPEN;  // declares object of gripper and sets initial position
 WRIST wrist = UP;     // declares object of wrist and sets initial position
@@ -128,7 +128,7 @@ void setup()
 
   //-------------------------------------
   Serial.println("done with setup");
-  
+
 }
 
 
@@ -185,6 +185,7 @@ void loop()
         break;
 
       case 'h':
+        setHome();
         homeRotation();
         break;
 

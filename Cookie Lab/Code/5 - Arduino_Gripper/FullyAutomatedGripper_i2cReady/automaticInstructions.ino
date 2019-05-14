@@ -10,11 +10,12 @@ void automaticInstructions() {
   setRotation(800);
   setHeight(275);
 
-  setRotation(1110);
-
+  setRotation(1100);
   servoFinger.write(CLOSE);
-  servoFinger.write(OPEN);
-  servoFinger.write(CLOSE);
+  delay(500);
+//  servoFinger.write(OPEN);
+//  delay(500);
+//  servoFinger.write(CLOSE);
 
   setHeight(160); // drops arm down
   setRotation(1750);
@@ -52,7 +53,7 @@ void automaticInstructions() {
 
   servoWrist.write(UP);
 
-  setRotation(1120);
+  setRotation(1110);
   setHeight(290);
   servoFinger.write(OPEN);
   setHeight(100);
