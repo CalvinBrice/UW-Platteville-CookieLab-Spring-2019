@@ -6,7 +6,7 @@ void homeRotation() {
   stepperBase->step(50, FORWARD, DOUBLE); //Rotates CCW
   //stepperBase->release(); //remove all power from the motor
   //set base zero
-  rotationCurrent = 700;  //rotation tracking
+  rotationCurrent = 565;  //rotation tracking
   Serial.print("rotationCurrent = ");
   Serial.println(rotationCurrent);
 }

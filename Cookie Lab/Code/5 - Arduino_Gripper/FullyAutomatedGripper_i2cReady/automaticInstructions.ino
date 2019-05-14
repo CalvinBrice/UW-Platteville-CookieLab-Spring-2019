@@ -13,9 +13,9 @@ void automaticInstructions() {
   setRotation(1100);
   servoFinger.write(CLOSE);
   delay(500);
-//  servoFinger.write(OPEN);
-//  delay(500);
-//  servoFinger.write(CLOSE);
+  //  servoFinger.write(OPEN);
+  //  delay(500);
+  //  servoFinger.write(CLOSE);
 
   setHeight(160); // drops arm down
   setRotation(1750);
@@ -31,6 +31,7 @@ void automaticInstructions() {
   digitalWrite(MIXER_PIN, MIX_OFF);
   delay(1000);
 
+  setRotation(1740);
   servoFinger.write(CLOSE);
   delay(1000);
   setPlate(0); //backward
@@ -41,19 +42,20 @@ void automaticInstructions() {
   servoWrist.write(DOWN);
   setHeight(253);
 
-  setRotation(110);
+  setRotation(100);
 
   setLinearActuator(0); //DOWN
   delay(5000);
   setLinearActuator(1); //UP
   delay(5000);
 
-  setRotation(600);
+  setRotation(700);
   setHeight(160);
 
-  servoWrist.write(UP);
+  delay(500);
+  //  servoWrist.write(UP);
 
-  setRotation(1110);
+  setRotation(1105);
   setHeight(290);
   servoFinger.write(OPEN);
   setHeight(100);
