@@ -2,7 +2,7 @@ void vanilla(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 10;
+      Steps = quantity * 100;
 //      Serial.println("Number of steps = "+String(Steps));
 //      Serial.println("Running vanilla dispenser");
 //      Serial.println("-----------------------------------------------");

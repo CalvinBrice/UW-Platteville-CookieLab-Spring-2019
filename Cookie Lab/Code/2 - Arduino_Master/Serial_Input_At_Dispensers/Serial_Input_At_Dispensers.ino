@@ -31,9 +31,9 @@ Adafruit_StepperMotor *myMotor11 = AFMS_5.getStepper(STEPS_PER_REV, 1); //  M&M'
 Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour agitator using port 3 (M3)
 
 enum Slaves {MASTER = 0x08, CART = 0x09, ARM = 0X10};
-enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, CAP_CONTROL, DISPENSER_CONTROL};
+enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, INDUCTOR_CONTROL, DISPENSER_CONTROL};
 enum CartControl {CART_NONE, CART_GO_TO_INDUCTOR, CART_GO_TO_ULTRASONIC, TRACK_SWITCH_CURVED, TRACK_SWITCH_STRAIGHT};
-enum Sensors {NO_SENSOR, U1, U2, CAP};
+enum Sensors {NO_SENSOR, U1, U2, INDUCTOR};
 enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
 enum TrackDirection {STRAIGHT, CURVED}; // Basically boolean with curved as false (0) and straight as true (1)
 DispenserControl mode = STOP;
@@ -55,7 +55,7 @@ Ingredients ingredient[] = { // Sets default parameters for each ingredient
   {"Molasses",        534, STRAIGHT, 0},
   {"Vanilla",         721, STRAIGHT, 0},
   {"Egg",             903, STRAIGHT, 0},
-  {"Add in 2",         43, CURVED,   0},
+  {"Add in 2",         50, CURVED,   0}, // 43
   {"Chocolate Chips", 207, CURVED,   0},
   {"Salt",            360, CURVED,   0},
   {"Baking Soda",     661, CURVED,   0},
@@ -65,34 +65,39 @@ Ingredients ingredient[] = { // Sets default parameters for each ingredient
 
 int destination = 1100;
 byte destArray[] = {(destination >> 8) & 0xFF, destination & 0xFF};
+int numberOfBays = 11;
 
-bool armInControl = false;
+bool mainInControl = true;
 
 void setup() {
   Wire.begin(MASTER);
+  Wire.onReceive(receiveEvent);
   Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
-  setupMotors();
-  //  numberOfBays = sizeof(ingredient) / sizeof(ingredient[0]); // (Memory allocated to entire struct array) / (Memory allocated to a single object in struct array) so in this case: 55 / 5 = 11
+  //  setupMotors();
 }
 
-//void serialEvent() { // Doesn't seem to work properly?
-//  sendCommand(CART, CART_NONE);
-//  delay(100000);
-//}
+void receiveEvent() {
+  while (!Wire.available());
+  mainInControl = Wire.read();
+}
+
+void serialEvent() {
+  while (!Serial.available());
+  int num = Serial.read();
+  while (Serial.available() < num);
+  for (int i = 0; i < num; i++) ingredient[i].quantity = Serial.read();
+}
 
 void loop() {
-  // For now I'm assuming the cart is at the inductive sensor
-  while (!Serial.available());
-  int numberOfBays = Serial.read();
-  Serial.println(numberOfBays);
-  for (int i = 0; i < numberOfBays; i++) blinker(Serial.read());
-  while (armInControl);
+  int sum = 0;
+  for (int i = 0; i < numberOfBays; i++) sum += ingredient[i].quantity; // Resets to wait for next recipe
+  while (!mainInControl); // only goes through loop if the master is in control of the clock line
+  while (sum == 0);
   for (int i = 0; i < numberOfBays; i++) {
     if (ingredient[i].quantity == 0) continue; // Ignore null ingredient quantities
     if (i != 0 && ingredient[i].trackDirection != ingredient[i - 1].trackDirection) { // Checks to see if the cart needs to switch branches
       sendCommand(CART, CART_GO_TO_INDUCTOR); // Start of the "switching branches" sequence
-      while (!requestCapacitanceFromSlave());
+      while (!requestInductanceFromSlave()); // Wait for the cart to get to the inductive sensor
       if (ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_STRAIGHT);
       if (!ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_CURVED);
     } // End of the "switching branches" sequence
@@ -103,8 +108,9 @@ void loop() {
     while (!doneDispensing(i, ingredient[i].quantity));
   }
   sendCommand(CART, CART_GO_TO_INDUCTOR);
-  while (!requestCapacitanceFromSlave());
+  while (!requestInductanceFromSlave());
   while (!serialWait()); // Used for testing arm and master arduinos
-  giveArmControl();
-  armInControl = true;
+  giveArmControl(); // Makes the arm the master
+  mainInControl = false; // Returns master-ness back to this board
+  for (int i = 0; i < numberOfBays; i++) ingredient[i].quantity = 0; // Resets to wait for next recipe
 }

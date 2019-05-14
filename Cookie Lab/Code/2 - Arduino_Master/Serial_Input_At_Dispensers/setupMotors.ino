@@ -10,6 +10,7 @@ void setupMotors() {
   Serial.println("Done initializing shields");
 
   //Define motor speeds globally
+//  myMotor1->setSpeed(60);   //  Butter (Not sure why this isn't set ~Nick)
   myMotor2->setSpeed(60);   //  Vanilla
   myMotor3->setSpeed(60);   //  Molasses
   myMotor4->setSpeed(60);   //  Egg

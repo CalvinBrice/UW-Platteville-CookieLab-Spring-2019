@@ -47,7 +47,6 @@ void setup() {
   pinMode(UPower2, OUTPUT);
   digitalWrite(UPower1, LOW);
   digitalWrite(UPower2, LOW);
-  digitalWrite(switchPin, LOW); // Set track to straight
   digitalWrite(cartDirectionPin, LOW); // Set direction to right
 
   // Find the cart and set it to the inductive sensor

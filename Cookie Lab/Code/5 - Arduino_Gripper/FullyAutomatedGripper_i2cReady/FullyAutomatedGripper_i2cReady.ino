@@ -19,7 +19,9 @@
 #include <Servo.h>
 #include <Wire.h>
 
+bool mainInControl = true; // If it's false, then the arm is in control
 bool debug = true;             // enables serial debugging
+enum Slaves {MASTER = 0x08, CART = 0x09, ARM = 0X10}; // Using these for i2c addresses
 const byte MY_ADDRESS = 0x10;  // i2c address of board
 
 float maxHomingDistanceInMM = 400;   // since the lead-screw is 500mm long with 400mm of travel, should never move more than that
@@ -27,7 +29,6 @@ float rotationMax = 10000;
 int stepSize = 50; // used to increment base rotation
 int heightCurrent;        //position tracking
 int rotationCurrent;      //rotation tracking
-
 
 
 // --- pin assignments ---

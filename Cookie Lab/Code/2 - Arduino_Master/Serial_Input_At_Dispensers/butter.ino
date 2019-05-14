@@ -2,7 +2,7 @@ void butter(int quantity, int mode) {
   switch (mode) {
     case DISPENSE:
       // step one revolution  in one direction:
-      Steps = quantity * 2; //calibrate the multiplication factor as necessary to match the dispensing scale shown on the interface
+      Steps = quantity * 100; //calibrate the multiplication factor as necessary to match the dispensing scale shown on the interface
 //      Serial.println("Number of steps = "+String(Steps));
 //      Serial.println("Running butter dispenser");
 //      Serial.println("-----------------------------------------------");

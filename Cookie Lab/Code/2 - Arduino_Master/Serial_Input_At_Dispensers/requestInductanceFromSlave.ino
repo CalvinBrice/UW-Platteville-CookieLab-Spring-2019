@@ -1,6 +1,6 @@
-bool requestCapacitanceFromSlave() {
+bool requestInductanceFromSlave() {
   Wire.beginTransmission(CART);
-  Wire.write(CAP_CONTROL);
+  Wire.write(INDUCTOR_CONTROL);
   Wire.endTransmission(CART);
   
   Wire.requestFrom(CART, 1);
