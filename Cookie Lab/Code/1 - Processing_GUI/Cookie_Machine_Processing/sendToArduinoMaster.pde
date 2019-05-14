@@ -7,7 +7,7 @@ void sendToArduinoMaster() {
   for (int i = 0; i < numbOfIngredients; i++) {
     for (int j = 0; j < numbOfIngredients; j++) {
       if (ingredient[j].getLocation() == i) {
-        list[i] = int(round(ingredient[j].getAmount()));
+        list[i] = round(ingredient[j].getAmount());
         println(list[i]);
         serial_port.write(list[i]);
       }

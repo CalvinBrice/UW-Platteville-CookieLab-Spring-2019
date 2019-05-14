@@ -17,9 +17,10 @@ void receiveEvent(int howMany) {
 void runAutomation() {
   //Calvin will fill in here
   Serial.println("Begin automated procedure");
-  // Automation code goes here
   
-  Wire.begin(MASTER); // Gives the main arduino master control
+  
+  Wire.begin(MASTER); // Gives the main arduino master control (This will go at the end of the runAutomation() function)
   Wire.write(true); // Sets MASTER's 'mainInControl' variable to true
   Wire.endTransmission();
+  mainInControl = true;
 }
