@@ -92,7 +92,7 @@ void loop() {
   int sum = 0;
   for (int i = 0; i < numberOfBays; i++) sum += ingredient[i].quantity; // Resets to wait for next recipe
   while (!mainInControl); // only goes through loop if the master is in control of the clock line
-  while (sum == 0);
+  if (sum == 0) return;
   for (int i = 0; i < numberOfBays; i++) {
     if (ingredient[i].quantity == 0) continue; // Ignore null ingredient quantities
     if (i != 0 && ingredient[i].trackDirection != ingredient[i - 1].trackDirection) { // Checks to see if the cart needs to switch branches
@@ -109,7 +109,7 @@ void loop() {
   }
   sendCommand(CART, CART_GO_TO_INDUCTOR);
   while (!requestInductanceFromSlave());
-  while (!serialWait()); // Used for testing arm and master arduinos
+//  while (!serialWait()); // Used for testing arm and master arduinos
   giveArmControl(); // Makes the arm the master
   mainInControl = false; // Returns master-ness back to this board
   for (int i = 0; i < numberOfBays; i++) ingredient[i].quantity = 0; // Resets to wait for next recipe

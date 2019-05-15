@@ -60,7 +60,7 @@ Servo servoPlate2;
 SpeedyStepper stepperHeight; // create the stepper motor object for the linear actuator (NEMA 23 motor)
 
 // Uses <SpeedyStepper.h> library
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();  // 0x66 Create the motor shield object with the I2C address (verify it isn't used by other shields for dispenser)
+Adafruit_MotorShield AFMS(0x66);  // 0x66 Create the motor shield object with the I2C address (verify it isn't used by other shields for dispenser)
 Adafruit_StepperMotor *stepperBase = AFMS.getStepper(400, 2); // Connect a stepper motor with 400 steps per revolution (1.8 degree) to motor port #2 (M3 and M4)
 
 
@@ -96,6 +96,7 @@ void setup()
   Wire.begin(MY_ADDRESS); // join i2c bus with address
   Wire.onReceive(receiveEvent); // register event
 
+
   //Set relay pin for mixer
   pinMode(MIXER_PIN, OUTPUT);
 
@@ -114,11 +115,13 @@ void setup()
   stepperHeight.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
   stepperHeight.setStepsPerMillimeter(25 * 2);    // 1x microstepping
 
+
   //Start motor shield and object for adafruit
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   stepperBase->setSpeed(80);  // 80 rpm
 
+  Serial.println("debug initialize");
   // set position of arm so it doesn't hit anything first
   servoFinger.write(OPEN);
   servoWrist.write(UP);
