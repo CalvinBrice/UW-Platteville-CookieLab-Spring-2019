@@ -50,7 +50,7 @@ void automaticInstructions() {
   delay(5000);
 
   setRotation(700);
-  setHeight(160);
+  setHeight(156);
 
   delay(500);
   //  servoWrist.write(UP);

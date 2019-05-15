@@ -11,12 +11,13 @@ void receiveEvent(int howMany) {
   while(!Wire.available());
   mainInControl = Wire.read(); // Sets mainInControl to false giving the ARM master control
   
-  //Call "runAutomation();"
+  //Call runAutomation();
 }
 
 void runAutomation() {
   //Calvin will fill in here
   Serial.println("Begin automated procedure");
+//  automaticInstructions();
   
   
   Wire.begin(MASTER); // Gives the main arduino master control (This will go at the end of the runAutomation() function)
