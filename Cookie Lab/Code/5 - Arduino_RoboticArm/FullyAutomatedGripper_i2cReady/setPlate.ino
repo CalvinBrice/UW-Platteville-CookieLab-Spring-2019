@@ -20,7 +20,7 @@ void setPlate(boolean value)
 {
   if (value == 1) {
     Serial.println("recieved: Plate FRONT");
-    servoPlate1.write(0);
+    servoPlate1.write(10);
   }
 
   if (value == 0) {

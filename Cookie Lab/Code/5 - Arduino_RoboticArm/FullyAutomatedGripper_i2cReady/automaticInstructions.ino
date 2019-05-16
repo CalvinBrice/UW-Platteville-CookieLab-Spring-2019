@@ -25,7 +25,7 @@ void automaticInstructions() {
   setHeight(275);
 
   //Position 2
-  setRotation(1100);
+  setRotation(1095);
   servoFinger.write(CLOSE);
   delay(500);
 
@@ -57,25 +57,27 @@ void automaticInstructions() {
 
   //Position 7
   servoWrist.write(DOWN);
-  setHeight(253);
+  setHeight(251);
 
   //Position 8
-  setRotation(100);
+  setRotation(99);
 
   setLinearActuator(0); //DOWN
   delay(5000);
   setLinearActuator(1); //UP
   delay(5000);
 
-//  //Position 9
-//  setRotation(700);
-//  setHeight(156);
-//  delay(500);
+  //Position 9
+  setRotation(700);
+  setHeight(156);
+  servoWrist.write(UP);
+  delay(500);
 
   //Position 10
-  setRotation(1100);
+  setRotation(1095);
   setHeight(290);
   servoFinger.write(OPEN);
   setHeight(100);
+  
 
 }
