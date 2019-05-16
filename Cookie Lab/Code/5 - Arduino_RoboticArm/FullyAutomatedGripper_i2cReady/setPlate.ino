@@ -18,22 +18,14 @@
 
 void setPlate(boolean value)
 {
-//  These are the set points... 
-  int rotMin = 30;  // start of motion
-  int rotTravel = 180; // range of motion
-  
-  int rot = 180 - rotTravel; // mathematical stuff
-
   if (value == 1) {
     Serial.println("recieved: Plate FRONT");
-    servoPlate1.write(180 - rot);
-    servoPlate2.write(rotMin + rot);
+    servoPlate1.write(0);
   }
 
   if (value == 0) {
     Serial.println("recieved: Plate BACK");
-    servoPlate1.write(rotMin);
-    servoPlate2.write(180-rotMin);
+    servoPlate1.write(180);
   }
 
 }

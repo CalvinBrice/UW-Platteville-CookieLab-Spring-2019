@@ -41,7 +41,7 @@ void automaticInstructions() {
   setHeight(70);
 
   digitalWrite(MIXER_PIN, MIX_ON);
-  delay(5000);
+  delay(5000); // Recommended value 30000 = 30 sec
   digitalWrite(MIXER_PIN, MIX_OFF);
   delay(1000);
 
@@ -53,7 +53,7 @@ void automaticInstructions() {
 
   //Position 6
   setHeight(160);
-  setRotation(800);
+  setRotation(1500);
 
   //Position 7
   servoWrist.write(DOWN);
@@ -67,13 +67,13 @@ void automaticInstructions() {
   setLinearActuator(1); //UP
   delay(5000);
 
-  //Position 9
-  setRotation(700);
-  setHeight(156);
-  delay(500);
+//  //Position 9
+//  setRotation(700);
+//  setHeight(156);
+//  delay(500);
 
   //Position 10
-  setRotation(1105);
+  setRotation(1100);
   setHeight(290);
   servoFinger.write(OPEN);
   setHeight(100);
