@@ -1,5 +1,0 @@
-To control cookie robot
-z_axis	Stores servo angle of gripper	3	SLIDER	Z Axis	0	1.0	0.0
-xbutton 	CW rotation of gripper wrist	1	BUTTON	Button 2	0	0.0	0.0
-x_axis	Stores servo angle of gripper base rotation	3	SLIDER	X Axis	0	1.0	0.0
-y_rotation	Stores Nema 23 vertical height position	3	SLIDER	Y Rotation	0	1.0	0.0

@@ -112,7 +112,7 @@ void loop() {
   }
   sendCommand(CART, CART_GO_TO_INDUCTOR);
   while (!requestInductanceFromSlave());
-  while (!serialWait()); // Used for testing arm and master arduinos
+//  while (!serialWait()); // Used for testing arm and master arduinos
   giveArmControl(); // Makes the arm the master
   mainInControl = false; // Returns master-ness back to this board
   for (int i = 0; i < numberOfBays; i++) ingredient[i].quantity = 0; // Resets to wait for next recipe
