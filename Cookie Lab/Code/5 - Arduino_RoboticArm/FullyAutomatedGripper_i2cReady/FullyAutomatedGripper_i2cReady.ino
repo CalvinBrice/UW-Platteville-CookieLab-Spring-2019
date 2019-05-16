@@ -11,7 +11,10 @@
 //
 //  Notes:
 //    1. Fix delay function with "blink without delay" technique using millis in the
-//       future... some code is already implimented
+//        future... some code is already implimented
+//    2. Look under loop code for manual control instructions via serial
+//    3. To start the automated sequence, type "9" into the serial monitor and press 
+//        enter
 //----------------------------------------------------------------------------------
 
 // --- Import correct libraries ---
@@ -146,7 +149,7 @@ void loop()
 
       //----Serial Commands----
 
-      case '0': //automatic procedure
+      case '9': //automatic procedure
         automaticInstructions(); 
         break;
 
