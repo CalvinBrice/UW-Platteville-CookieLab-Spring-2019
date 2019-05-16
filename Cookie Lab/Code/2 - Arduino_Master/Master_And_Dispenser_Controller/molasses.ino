@@ -6,7 +6,7 @@ void molasses(int quantity, int mode) {
 //      Serial.println("Number of steps = "+String(Steps));
 //      Serial.println("Running molasses dispenser");
 //      Serial.println("-----------------------------------------------");
-      myMotor3->step(Steps, FORWARD, INTERLEAVE);
+      myMotor3->step(Steps, BACKWARD, INTERLEAVE);
       myMotor3->release(); //end function be removing power from the motor
       break;
     case MOVE_UP:

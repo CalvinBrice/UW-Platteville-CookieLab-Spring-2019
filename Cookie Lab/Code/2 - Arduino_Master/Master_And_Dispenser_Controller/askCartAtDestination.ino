@@ -4,8 +4,8 @@
   Wire.write(sensor);
   Wire.write(destArray, 2);
   Wire.endTransmission(slave);
+  
   Wire.requestFrom(slave,1);
-  while(!Wire.available());
-  endOfTheLine = Wire.read();
+  return Wire.read();
 }
 

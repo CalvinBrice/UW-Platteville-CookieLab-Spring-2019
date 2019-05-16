@@ -7,7 +7,7 @@ void butter(int quantity, int mode) {
 //      Serial.println("Running butter dispenser");
 //      Serial.println("-----------------------------------------------");
       myMotor1->setSpeed(100);
-      myMotor1->step(Steps, FORWARD, DOUBLE);
+      myMotor1->step(Steps, BACKWARD, DOUBLE);
       myMotor1->release(); //end function be removing power from the motor
       break;
     case MOVE_UP:

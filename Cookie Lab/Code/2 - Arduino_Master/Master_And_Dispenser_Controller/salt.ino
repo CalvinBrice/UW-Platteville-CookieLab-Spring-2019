@@ -6,7 +6,7 @@ void salt(int quantity, int mode) {
 //      Serial.println("Number of steps = "+String(Steps));
 //      Serial.println("Running salt dispenser");
 //      Serial.println("-----------------------------------------------");
-      myMotor10->step(Steps, BACKWARD, DOUBLE);
+      myMotor10->step(Steps, FORWARD, DOUBLE);
       myMotor10->release(); //end function be removing power from the motor
       break;
     case MOVE_UP:

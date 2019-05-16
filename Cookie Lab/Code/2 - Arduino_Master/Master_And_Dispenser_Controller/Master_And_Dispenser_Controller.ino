@@ -50,17 +50,17 @@ struct Ingredients {
 
 Ingredients ingredient[] = { // Sets default parameters for each ingredient
   // label, location, trackDirection, quantity
-  {"Butter",          126, STRAIGHT, 0},
-  {"Sugar",           379, STRAIGHT, 0},
-  {"Molasses",        534, STRAIGHT, 0},
-  {"Vanilla",         721, STRAIGHT, 0},
-  {"Egg",             903, STRAIGHT, 0},
-  {"Add in 2",         50, CURVED,   0}, // 43
-  {"Chocolate Chips", 207, CURVED,   0},
-  {"Salt",            360, CURVED,   0},
-  {"Baking Soda",     661, CURVED,   0},
-  {"Flour",           778, CURVED,   0},
-  {"Oatmeal",         927, CURVED,   0}
+  {"Butter",          126, STRAIGHT, 2}, // 'location' is relative to the ultrasonic sensors where 1024 is nearest it and 1 is furthest away (0 means it doesn't see anything
+  {"Sugar",           379, STRAIGHT, 2}, // or that something is in the blind zone which is 0 - 4ish inches from the ultrasonic sensor).
+  {"Molasses",        532, STRAIGHT, 2},
+  {"Vanilla",         721, STRAIGHT, 2},
+  {"Egg",             903, STRAIGHT, 2},
+  {"Add in 2",        90,  CURVED,   2},
+  {"Chocolate Chips", 207, CURVED,   2},
+  {"Salt",            360, CURVED,   2},
+  {"Baking Soda",     661, CURVED,   2},
+  {"Flour",           785, CURVED,   2},
+  {"Oatmeal",         940, CURVED,   2}
 };
 
 int destination = 1100;
@@ -89,18 +89,21 @@ void serialEvent() {
 }
 
 void loop() {
+//doneDispensing(4,1);
+//while(!Serial.available());
+//while(Serial.available()) Serial.read();
   int sum = 0;
   for (int i = 0; i < numberOfBays; i++) sum += ingredient[i].quantity; // Resets to wait for next recipe
   while (!mainInControl); // only goes through loop if the master is in control of the clock line
-  while (sum == 0);
+  if (sum == 0) return;
   for (int i = 0; i < numberOfBays; i++) {
-    if (ingredient[i].quantity == 0) continue; // Ignore null ingredient quantities
     if (i != 0 && ingredient[i].trackDirection != ingredient[i - 1].trackDirection) { // Checks to see if the cart needs to switch branches
       sendCommand(CART, CART_GO_TO_INDUCTOR); // Start of the "switching branches" sequence
       while (!requestInductanceFromSlave()); // Wait for the cart to get to the inductive sensor
       if (ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_STRAIGHT);
       if (!ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_CURVED);
     } // End of the "switching branches" sequence
+    if (ingredient[i].quantity == 0) continue; // Ignore null ingredient quantities
     if (!ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_STRAIGHT);
     if (ingredient[i].trackDirection) sendCommand(CART, TRACK_SWITCH_CURVED);
     sendCommand(CART, CART_GO_TO_ULTRASONIC);

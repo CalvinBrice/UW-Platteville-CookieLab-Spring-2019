@@ -6,7 +6,7 @@ void sugar(int quantity, int mode) {
 //      Serial.println("Number of steps = "+String(Steps));
 //      Serial.println("Running sugar dispenser");
 //      Serial.println("-----------------------------------------------");
-      myMotor5->step(Steps, FORWARD, DOUBLE);
+      myMotor5->step(Steps, BACKWARD, DOUBLE);
       myMotor5->release(); //end function be removing power from the motor
       break;
     case MOVE_UP: // CW

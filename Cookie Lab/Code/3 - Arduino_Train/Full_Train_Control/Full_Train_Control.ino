@@ -2,30 +2,27 @@
 
 // Ultrasonic sensor on straight track
 int URead1 = A0; // Pin to read ADC value for ultrasonic sensor #1 (on straight track)
-int UPower1 = 11; // Pin to power the ultrasonic sensor #1
+int UPower1 = 11; // Pin to power the ultrasonic sensor #1 (U1)
 
 // Ultrasonic sensor on curved track
 int URead2 = A1; // Pin to read ADC value for ultrasonic sensor #2 (on curved track)
-int UPower2 = 10; // Pin to power the ultrasonic sensor #2
+int UPower2 = 10; // Pin to power the ultrasonic sensor #2 (U2)
 
-// Capacitive Sensor
-int capSensorPin = 9; // Pin to read the capacitor sensor's value
-bool isTrainAtOrigin = false; // Variable to save the capacitor sensor's value
+// Inductive Sensor
+int indSensorPin = 9; // Pin to read the inductor sensor's value
 
 // Switch Pin
 int switchPin = 8; // Pin to write to the switch
-boolean isSwitchOnRight = false; // Variable to save the switch's direction
-boolean straight = isSwitchOnRight;
 
 // Cart Control Pin
 int cartDirectionPin = 2; // Pin that controls the speed and direction of train
 int trackPWM = 3; // Pin that powers the track when set HIGH
 
 enum Slaves {DISPENSER = 0X08, TRAIN = 0x09, ARM = 0X10};
-enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, CAP_CONTROL, DISPENSER_CONTROL};
+enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, IND_CONTROL, DISPENSER_CONTROL};
 enum CartControl {CART_NONE, CART_GO_TO_INDUCTOR, CART_GO_TO_ULTRASONIC, TRACK_SWITCH_CURVED, TRACK_SWITCH_STRAIGHT};
 enum CartSpeed {CART_STOP = 0, CART_GO = 255};
-enum Sensors {NO_SENSOR, U1, U2, CAP};
+enum Sensors {NO_SENSOR, U1, U2, IND};
 enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
 
 Commands controlCommand = NONE;
@@ -42,7 +39,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(cartDirectionPin, OUTPUT);
   pinMode(switchPin, OUTPUT);
-  pinMode(capSensorPin, INPUT);
+  pinMode(indSensorPin, INPUT);
   pinMode(UPower1, OUTPUT);
   pinMode(UPower2, OUTPUT);
   digitalWrite(UPower1, LOW);
@@ -62,7 +59,7 @@ void receiveEvent() {
     destination = Wire.read();
     destination = (destination << 8) | Wire.read();
   }
-  else if (controlCommand == CAP_CONTROL) sensor = CAP;
+  else if (controlCommand == IND_CONTROL) sensor = IND;
   else Serial.println("Invalid input");
 }
 
@@ -86,9 +83,9 @@ void requestEvent() {
       Wire.write(UValue);
       digitalWrite(UPower2, LOW);
       break;
-    case CAP:
-      while (!digitalRead(capSensorPin));
-      Wire.write(digitalRead(capSensorPin));
+    case IND:
+      while (!digitalRead(indSensorPin));
+      Wire.write(digitalRead(indSensorPin));
       cartCommand = CART_NONE;
       break;
     default:

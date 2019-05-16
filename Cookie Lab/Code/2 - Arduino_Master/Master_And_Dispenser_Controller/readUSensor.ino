@@ -12,7 +12,7 @@ bool readUSensor(byte slave, int command, int destination, bool straightSide) {
   Wire.endTransmission(slave);
   
   Wire.requestFrom(slave, 1);
-  while (!Wire.available());
+//  while (!Wire.available()); // User 'Koepel' on github noted this as a common mistake where available() is not need following a requestFrom()
   return  Wire.read();
 }
 
