@@ -32,10 +32,10 @@ Adafruit_DCMotor *myMotor12 = AFMS_5.getMotor(3); //  dc motor relay for flour a
 
 enum Slaves {MASTER = 0x08, CART = 0x09, ARM = 0X10};
 enum Commands {NONE, CART_CONTROL, ULTRASONIC_CONTROL, INDUCTOR_CONTROL, DISPENSER_CONTROL};
-enum CartControl {CART_NONE, CART_GO_TO_INDUCTOR, CART_GO_TO_ULTRASONIC, TRACK_SWITCH_CURVED, TRACK_SWITCH_STRAIGHT};
+enum CartControl {CART_NONE, CART_GO_TO_INDUCTOR, CART_GO_TO_ULTRASONIC, TRACK_SWITCH_STRAIGHT, TRACK_SWITCH_CURVED};
 enum Sensors {NO_SENSOR, U1, U2, INDUCTOR};
 enum DispenserControl {STOP, DISPENSE, MOVE_UP, MOVE_DOWN};
-enum TrackDirection {STRAIGHT, CURVED}; // Basically boolean with curved as false (0) and straight as true (1)
+enum TrackDirection {CURVED, STRAIGHT}; // Basically boolean with straight as false (0) and curved as true (1)
 DispenserControl mode = STOP;
 
 Slaves slave = CART;
